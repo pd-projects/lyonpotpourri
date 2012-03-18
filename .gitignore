@@ -1,0 +1,9 @@
+*.o
+# Mac OS X
+*.pd_darwin
+*.dylib
+# GNU/Linux
+*.pd_linux
+*.so
+# Windows
+*.dll
