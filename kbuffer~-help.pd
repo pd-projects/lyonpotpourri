@@ -1,0 +1,63 @@
+#N canvas 487 22 519 486 10;
+#X obj 29 125 kbuffer~ 512 8000;
+#X text 155 122 args: ksampling rate \, storage time (in ms.);
+#N canvas 0 22 466 316 more-messages 0;
+#X msg 238 89 size 4000;
+#X obj 173 154 outlet;
+#X text 170 212 reset size or srate;
+#X msg 275 124 info;
+#X msg 137 91 ksrate 1024;
+#X connect 0 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X restore 287 85 pd more-messages;
+#X msg 28 80 record;
+#X msg 83 81 play;
+#X msg 128 82 stop;
+#X msg 171 82 speed \$1;
+#X msg 246 82 loop;
+#X obj 29 188 phasor~;
+#X floatatom 143 218 5 0 0 0 - - -;
+#X msg 277 196 \; pd dsp \$1;
+#X obj 277 171 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X floatatom 11 51 5 0 0 2 kb-input kb-input -;
+#X obj 67 278 hsl 128 15 300 1000 0 0 kb-input empty empty -2 -6 0
+8 -261119 -1 -1 0 1;
+#X floatatom 116 42 5 0 0 0 - - -;
+#X msg 114 19 1;
+#X obj 29 307 *~ 0.1;
+#X obj 29 337 dac~;
+#X obj 114 -2 loadbang;
+#X text 162 37 try different playback speed \, negative OK;
+#X text 38 364 kbuffer~ lets you sample gestures with a lower sampling
+rate.;
+#X text 78 377 That saves you storage memory.;
+#X text 36 405 You could probably do this with block~ but kbuffer~
+saves you the hassle of dealing with an array~.;
+#X obj 165 165 metro 100;
+#X obj 165 146 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X obj 143 193 snapshot~;
+#X text 186 147 monitor phase;
+#X text 65 250 hit record \; then perform some wiggles here:;
+#X text 172 65 after done recording \, hit loop or play;
+#X connect 0 0 8 0;
+#X connect 0 1 25 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 16 0;
+#X connect 11 0 10 0;
+#X connect 12 0 0 0;
+#X connect 14 0 6 0;
+#X connect 15 0 14 0;
+#X connect 16 0 17 0;
+#X connect 16 0 17 1;
+#X connect 18 0 15 0;
+#X connect 23 0 25 0;
+#X connect 24 0 23 0;
+#X connect 25 0 9 0;

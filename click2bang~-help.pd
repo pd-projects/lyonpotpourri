@@ -1,0 +1,10 @@
+#N canvas 514 317 454 304 10;
+#X obj 89 86 samm~ 60 1;
+#X obj 89 121 click2bang~;
+#X obj 88 175 bng 40 100 50 0 empty empty empty 17 7 0 10 -216994 -1
+-1;
+#X msg 241 116 \; pd dsp 0;
+#X msg 241 146 \; pd dsp 1;
+#X text 85 236 Convert click trigger to a bang;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;

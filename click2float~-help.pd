@@ -1,0 +1,11 @@
+#N canvas 719 335 462 312 10;
+#X floatatom 100 160 5 0 0 0 - - -;
+#X obj 101 55 samm~ 120 1;
+#X obj 101 121 click2float~;
+#X obj 101 87 mask~ 2 4 6.333 8;
+#X msg 282 99 \; pd dsp 0;
+#X msg 282 131 \; pd dsp 1;
+#X text 100 194 Convert a click to a float;
+#X connect 1 0 3 0;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;

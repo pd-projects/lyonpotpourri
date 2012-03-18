@@ -1,0 +1,18 @@
+#N canvas 1123 29 454 304 10;
+#X obj 21 46 samm~ 120 1;
+#X obj 21 75 mask~ 440 550 660 880;
+#X obj 21 127 osc~;
+#X obj 21 104 clickhold~;
+#X obj 21 187 dac~;
+#X text 102 105 convert click to sustained signal;
+#X msg 114 168 \; pd dsp \$1;
+#X obj 113 141 tgl 20 0 empty empty empty 0 -6 0 8 -199424 -1 -1 0
+1;
+#X obj 21 156 *~ 0.025;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 8 0;
+#X connect 3 0 2 0;
+#X connect 7 0 6 0;
+#X connect 8 0 4 0;
+#X connect 8 0 4 1;

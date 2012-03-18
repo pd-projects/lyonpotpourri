@@ -1,0 +1,80 @@
+#N canvas 9 477 479 329 10;
+#X obj 182 168 adsr~;
+#X msg 182 29 bang;
+#X obj 25 193 osc~ 400;
+#X obj 166 209 *~;
+#X obj 166 239 *~ 0.1;
+#X obj 166 270 dac~;
+#X msg 275 243 \; pd dsp \$1;
+#X obj 275 201 tgl 30 0 empty empty empty 0 -6 0 8 -16366 -1 -1 0 1
+;
+#X msg 242 47 10 50 50 50;
+#X msg 107 104 mute \$1;
+#X obj 107 69 tgl 30 0 empty empty empty 0 -6 0 8 -16366 -1 -1 0 1
+;
+#X text 239 32 adsr data as list;
+#X msg 250 67 100 50 100 500;
+#X obj 368 31 loadbang;
+#N canvas 0 22 673 325 individual-adsr-elements 0;
+#X obj 62 244 outlet;
+#X msg 62 158 set_a \$1;
+#X msg 135 159 set_d \$1;
+#X msg 210 158 set_s \$1;
+#X msg 283 159 set_r \$1;
+#X msg 353 159 set_gain1 \$1;
+#X msg 451 160 set_gain2 \$1;
+#X obj 353 110 vsl 15 30 0 1 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 2900 1;
+#X obj 451 109 vsl 15 30 0 1 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 2030 1;
+#X obj 62 106 vsl 15 30 1 100 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 1435 1;
+#X obj 135 110 vsl 15 30 10 100 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 1289 1;
+#X obj 210 107 vsl 15 30 50 500 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 967 1;
+#X obj 283 109 vsl 15 30 50 1000 0 0 empty empty empty 0 -8 0 8 -242048
+-1 -1 458 1;
+#X msg 62 40 50 50 200 200 1 0.7;
+#X obj 62 64 unpack f f f f f f;
+#X obj 62 16 loadbang;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 5 0;
+#X connect 8 0 6 0;
+#X connect 9 0 1 0;
+#X connect 10 0 2 0;
+#X connect 11 0 3 0;
+#X connect 12 0 4 0;
+#X connect 13 0 14 0;
+#X connect 14 0 9 0;
+#X connect 14 1 10 0;
+#X connect 14 2 11 0;
+#X connect 14 3 12 0;
+#X connect 14 4 7 0;
+#X connect 14 5 8 0;
+#X connect 15 0 13 0;
+#X restore 261 98 pd individual-adsr-elements;
+#X obj 283 152 samm~ 40 1;
+#X text 178 12;
+#X text 233 135;
+#X text 18 295 adsr~ - An ADSR envelope triggered by signal clicks
+or bangs;
+#X connect 0 0 3 1;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 0 5 1;
+#X connect 7 0 6 0;
+#X connect 8 0 0 0;
+#X connect 9 0 0 0;
+#X connect 10 0 9 0;
+#X connect 12 0 0 0;
+#X connect 13 0 8 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 0;
