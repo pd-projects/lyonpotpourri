@@ -10,10 +10,10 @@
 #X obj 41 65 openpanel;
 #X obj 158 26 loadbang;
 #X msg 41 87 read -resize \$1 bashdrum;
-#X msg 157 52 read -resize ../sound/kick_11d.aiff bashdrum;
+#X msg 157 52 read -resize examples/kick_11d.aiff bashdrum;
 #X obj 156 132 loadbang;
-#X msg 111 161 read -resize ../sound/hi_c_12b.aiff hihat;
-#X msg 148 203 read -resize ../sound/KR55SNAR.aiff snare;
+#X msg 111 161 read -resize examples/hi_c_12b.aiff hihat;
+#X msg 148 203 read -resize examples/KR55SNAR.aiff snare;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
 #X connect 3 0 5 0;

@@ -10,7 +10,7 @@
 #X obj 144 37 loadbang;
 #X msg 36 131 read -resize \$1 dopey;
 #X obj 117 17 inlet;
-#X msg 117 64 read -resize ../sound/voice.wav dopey;
+#X msg 117 64 read -resize examples/voice.wav dopey;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
 #X connect 3 0 6 0;

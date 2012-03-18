@@ -10,7 +10,7 @@
 #X obj 49 119 openpanel;
 #X obj 49 92 inlet;
 #X msg 49 142 read -resize \$1 sf4player;
-#X msg 339 115 read -resize ../sound/bell.aiff sf4player;
+#X msg 339 115 read -resize examples/bell.aiff sf4player;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 0 0;

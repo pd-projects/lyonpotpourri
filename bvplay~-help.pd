@@ -5,7 +5,7 @@
 #X obj 49 92 inlet;
 #X msg 49 142 read -resize \$1 bvplay-demo-array;
 #X obj 354 89 loadbang;
-#X msg 354 125 read -resize ../sound/voice.wav bvplay-demo-array;
+#X msg 354 125 read -resize examples/voice.wav bvplay-demo-array;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 0 0;

@@ -166,7 +166,7 @@
 #X obj 30 129 openpanel;
 #X msg 30 151 read -resize \$1 sound1;
 #X obj 11 57 loadbang;
-#X msg 10 82 read -resize ../sound/voice.wav sound1;
+#X msg 10 82 read -resize examples/voice.wav sound1;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;
