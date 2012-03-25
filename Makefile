@@ -10,7 +10,7 @@ SOURCES = adsr~.c bashfest~.c buffet~.c bvplay~.c channel~.c chopper~.c clean_se
 
 # list all pd objects (i.e. myobject.pd) files here, and their helpfiles will
 # be included automatically
-PDOBJECTS = 
+PDOBJECTS = smap.pd
 
 # example patches and related files, in the 'examples' subfolder
 EXAMPLES = BD0010.aif BT0AADA.aiff CP.aif KR55SNAR.aiff hi_c_12b.aiff hi_o_06e.aiff hi_o_15g.aiff kick_11d.aiff mar2.aif prettypad.aif soda-bd.aif trickhit.aif
