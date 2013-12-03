@@ -1,26 +1,15 @@
 #include "MSPd.h"
 
-/**/
 
-#if __PD__
 static t_class *markov_class;
-#endif
-
-#if __MSP__
-void *markov_class;
-#endif
 
 #define OBJECT_NAME "markov~"
 
 typedef struct _markov
 {
-#if __MSP__
-  t_pxobject x_obj;
-#endif
-#if __PD__
-  t_object x_obj;
-  float x_f;
-#endif	
+    
+    t_object x_obj;
+    float x_f;
     // for markov
 	int event_count;
 	int maximum_length;
@@ -33,7 +22,7 @@ typedef struct _markov
 	int event_samples;
 	int subdiv;
 	float tempo;
-
+    
 	float sr;
 	short manual_override;
 	short trigger;
@@ -42,8 +31,7 @@ typedef struct _markov
 //void main(void)
 void *markov_new(t_floatarg event_count);
 t_int *markov_perform(t_int *w);
-void markov_dsp(t_markov *x, t_signal **sp, short *count);
-void markov_assist(t_markov *x, void *b, long m, long a, char *s);
+void markov_dsp(t_markov *x, t_signal **sp);
 int markov_domarkov( int current_event, float **event_weights, int event_count );
 void markov_subdiv(t_markov *x, t_floatarg subdiv);
 void markov_tempo(t_markov *x, t_floatarg tempo);
@@ -53,48 +41,27 @@ void markov_values(t_markov *x, t_symbol *msg, short argc, t_atom *argv);
 void markov_event_odds(t_markov *x, t_symbol *msg, short argc, t_atom *argv);
 void markov_free( t_markov *x);
 void markov_bang( t_markov *x);
-#if __MSP__
-void main(void)
-{
-    setup((t_messlist **)&markov_class,(method) markov_new, (method)markov_free, (short)sizeof(t_markov), 0L, A_DEFFLOAT, 0);
-    addmess((method)markov_dsp, "dsp", A_CANT, 0);
-    addmess((method)markov_assist,"assist",A_CANT,0);
-    addmess((method)markov_subdiv,"subdiv",A_FLOAT,0);
-    addmess((method)markov_tempo,"tempo",A_FLOAT,0);
-    addmess((method)markov_values,"values",A_GIMME,0);
-    addmess((method)markov_event_odds,"event_odds",A_GIMME,0);
-    addmess((method)markov_set_length,"set_length",A_FLOAT,0);
-    addmess((method)markov_manual_override,"manual_override",A_FLOAT,0);
-    addbang((method)markov_bang);
-    dsp_initclass();
-	post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);}
-#endif
-#if __PD__
+
 void markov_tilde_setup(void){
-  markov_class = class_new(gensym("markov~"), (t_newmethod)markov_new, 
-			    (t_method)markov_free,sizeof(t_markov), 0,A_DEFFLOAT,0);
-  CLASS_MAINSIGNALIN(markov_class, t_markov, x_f);
-  class_addmethod(markov_class,(t_method)markov_dsp,gensym("dsp"),0);
-//  class_addmethod(markov_class,(t_method)markov_mute,gensym("mute"),A_FLOAT,0);
-  class_addmethod(markov_class,(t_method)markov_subdiv,gensym("subdiv"),A_FLOAT,0);
-  class_addmethod(markov_class,(t_method)markov_tempo,gensym("tempo"),A_FLOAT,0);
-  class_addmethod(markov_class,(t_method)markov_set_length,gensym("set_length"),A_FLOAT,0);
-  class_addmethod(markov_class,(t_method)markov_manual_override,gensym("manual_override"),A_FLOAT,0);
-  class_addmethod(markov_class,(t_method)markov_values,gensym("values"),A_GIMME,0);
-  class_addmethod(markov_class,(t_method)markov_event_odds,gensym("event_odds"),A_GIMME,0);
-  class_addbang(markov_class,(t_method)markov_bang);
-  post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
+    markov_class = class_new(gensym("markov~"), (t_newmethod)markov_new,
+                             (t_method)markov_free,sizeof(t_markov), 0,A_DEFFLOAT,0);
+    CLASS_MAINSIGNALIN(markov_class, t_markov, x_f);
+    class_addmethod(markov_class,(t_method)markov_dsp,gensym("dsp"),0);
+    class_addmethod(markov_class,(t_method)markov_subdiv,gensym("subdiv"),A_FLOAT,0);
+    class_addmethod(markov_class,(t_method)markov_tempo,gensym("tempo"),A_FLOAT,0);
+    class_addmethod(markov_class,(t_method)markov_set_length,gensym("set_length"),A_FLOAT,0);
+    class_addmethod(markov_class,(t_method)markov_manual_override,gensym("manual_override"),A_FLOAT,0);
+    class_addmethod(markov_class,(t_method)markov_values,gensym("values"),A_GIMME,0);
+    class_addmethod(markov_class,(t_method)markov_event_odds,gensym("event_odds"),A_GIMME,0);
+    class_addbang(markov_class,(t_method)markov_bang);
+    potpourri_announce(OBJECT_NAME);
 }
-#endif
+
 
 void markov_free( t_markov *x)
 {
-#if __MSP__
-	dsp_free( (t_pxobject *) x);
-#endif
 	free( x->values );
 	free( x->event_weights );
-
 }
 
 void markov_manual_override(t_markov *x, t_floatarg toggle)
@@ -110,7 +77,7 @@ void markov_bang(t_markov *x)
 void markov_values(t_markov *x, t_symbol *msg, short argc, t_atom *argv)
 {
 	int i;
-
+    
 	if( argc != x->event_count ){
 		error("there must be %d values in this list", x->event_count);
 		return;
@@ -125,9 +92,9 @@ void markov_event_odds(t_markov *x, t_symbol *msg, short argc, t_atom *argv)
 	int i;
 	int event;
 	float sum = 0.0;
-
+    
 	float **event_weights = x->event_weights;
-		
+    
 	if( argc != x->event_count + 1){
 		error("there must be %d values in this list", x->event_count + 1);
 		return;
@@ -159,7 +126,7 @@ void markov_set_length(t_markov *x, t_floatarg length)
 		return;
 	}
 	x->event_count = length;
-
+    
 }
 
 void markov_tempo(t_markov *x, t_floatarg tempo)
@@ -175,54 +142,26 @@ void markov_subdiv(t_markov *x, t_floatarg subdiv)
 		subdiv = 1;
 	x->event_samples = x->sr * (60.0/x->tempo) / (float) x->subdiv;
 }
-void markov_assist (t_markov *x, void *b, long msg, long arg, char *dst)
-{
-	if (msg==1) {
-		switch (arg) {
-			case 0:
-				sprintf(dst,"(bang/messages)");
-				break;
-
-		}
-	} else if (msg==2) {
-		switch (arg) {
-			case 0:
-				sprintf(dst,"(signal) Output");
-				break;
-			case 1:
-				sprintf(dst,"(signal) Sync");
-				break;
-		}
-	}
-}
 
 void *markov_new(t_floatarg event_count)
 {
-
+    
   	int i;
-#if __MSP__
-	t_markov *x = (t_markov *)newobject(markov_class);
-    dsp_setup((t_pxobject *)x,1);
-    outlet_new((t_pxobject *)x, "signal");
-    outlet_new((t_pxobject *)x, "signal");
-#endif
-#if __PD__
-  t_markov *x = (t_markov *)pd_new(markov_class);
-//  inlet_new(&x->x_obj, &x->x_obj.ob_pd,gensym("signal"), gensym("signal"));
-  outlet_new(&x->x_obj, gensym("signal"));
-  outlet_new(&x->x_obj, gensym("signal"));
-#endif
+
+    t_markov *x = (t_markov *)pd_new(markov_class);
+    outlet_new(&x->x_obj, gensym("signal"));
+    outlet_new(&x->x_obj, gensym("signal"));
     // event_count is MAXIMUM event_count
 	if( event_count < 2 || event_count > 256 ){
 		error("maximum event length limited to 256, set to 16 here");
 		event_count = 16 ;
 	}
     x->maximum_length = event_count;
-
+    
     x->event_count = 4; // default pattern
     x->count = 0;
-    		
-    x->event_weights = (float **) malloc( event_count * sizeof(float *) ); 
+    
+    x->event_weights = (float **) malloc( event_count * sizeof(float *) );
   	for( i = 0; i < 10; i++ ){
     	x->event_weights[i] = (float *) malloc( event_count * sizeof(float) );
   	}
@@ -260,9 +199,9 @@ void *markov_new(t_floatarg event_count)
 	}
 	x->subdiv = 1;
 	x->event_samples = x->sr * (60.0/x->tempo) / (float) x->subdiv;
-
+    
 	x->trigger = 0;
-
+    
     return (x);
 }
 
@@ -271,7 +210,6 @@ t_int *markov_perform(t_int *w)
 {
 	
 	t_markov *x = (t_markov *) (w[1]);
-//	t_float *in = (t_float *)(w[2]); // ignored
 	t_float *out = (t_float *)(w[3]);
 	t_float *sync = (t_float *)(w[4]);
 	int n = (int)(w[5]);
@@ -283,7 +221,7 @@ t_int *markov_perform(t_int *w)
 	int current_event = x->current_event;
 	float *values = x->values;
 	float current_value = x->current_value;
-
+    
 	
 	if( x->manual_override ){
 		while (n--) {
@@ -295,24 +233,24 @@ t_int *markov_perform(t_int *w)
 			*out++ = current_value;
 		}
 		x->current_value = current_value;
-		x->current_event = current_event;		
+		x->current_event = current_event;
 		return (w+6);
 	}
 	
-	while (n--) { 
-
+	while (n--) {
+        
 		if( ++count >= event_samples ){
 			current_event = markov_domarkov( current_event, event_weights, event_count );
 			current_value = values[ current_event ];
 			count = 0;
 		}
-
+        
 		*sync++ = (float) count / (float) event_samples;
-
+        
 		*out++ = current_value;
-
+        
 	}
-
+    
 	x->current_value = current_value;
 	x->count = count;
 	x->current_event = current_event;
@@ -334,19 +272,19 @@ int markov_domarkov(int current_event, float **event_weights, int event_count)
 			return i;
 		}
 		randval -= event_weights[current_event][i];
-	} 
-	return 0; // should never happen	
+	}
+	return 0; // should never happen
 }
 
-void markov_dsp(t_markov *x, t_signal **sp, short *count)
+void markov_dsp(t_markov *x, t_signal **sp)
 {
-//	long i;
-  if(x->sr!=sp[0]->s_sr){
-    x->sr=sp[0]->s_sr;// BUG!!! in MSP code was !=
-    x->event_samples = x->sr * (60.0/x->tempo) / (float) x->subdiv;
-    x->count = 0;
-  }
-		dsp_add(markov_perform, 5, x, sp[0]->s_vec , sp[1]->s_vec, sp[2]->s_vec, 
-		sp[0]->s_n);
+    //	long i;
+    if(x->sr!=sp[0]->s_sr){
+        x->sr=sp[0]->s_sr;// BUG!!! in MSP code was !=
+        x->event_samples = x->sr * (60.0/x->tempo) / (float) x->subdiv;
+        x->count = 0;
+    }
+    dsp_add(markov_perform, 5, x, sp[0]->s_vec , sp[1]->s_vec, sp[2]->s_vec, 
+            sp[0]->s_n);
 }
 

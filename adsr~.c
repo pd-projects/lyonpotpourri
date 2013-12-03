@@ -1,25 +1,16 @@
 #include "MSPd.h"
 /* internal metronome now redundant so disabled */
-#if __PD__
-static t_class *adsr_class;
-#endif
+// LyonPotpourri 3.0 - Max references removed
 
-#if __MSP__
-void *adsr_class;
-#endif
+
+static t_class *adsr_class;
 
 #define OBJECT_NAME "adsr~"
 
 typedef struct _adsr
 {
-#if __MSP__
-	t_pxobject x_obj;
-#endif
-#if __PD__
 	t_object x_obj;
 	float x_f;
-#endif 
-	
 	// Variables Here
 	float a;
 	float d;
@@ -49,10 +40,10 @@ typedef struct _adsr
 	short mute;
 } t_adsr;
 
-void *adsr_new(t_symbol *s, int argc, t_atom *argv);
+static void *adsr_new(t_symbol *s, int argc, t_atom *argv);
 
 t_int *adsr_perform(t_int *w);
-void adsr_dsp(t_adsr *x, t_signal **sp, short *count);
+void adsr_dsp(t_adsr *x, t_signal **sp);
 void adsr_assist(t_adsr *x, void *b, long m, long a, char *s);
 void adsr_bang(t_adsr *x);
 void adsr_manual_override(t_adsr *x, t_floatarg toggle);
@@ -66,65 +57,10 @@ void adsr_set_gain1(t_adsr *x, t_floatarg f);
 void adsr_set_gain2(t_adsr *x, t_floatarg f);
 void set_tempo(t_adsr *x, t_floatarg f);
 void adsr_mute(t_adsr *x, t_floatarg f);
-#if __PD__
+
 void atom_arg_getfloat(float *c, long idx, long ac, t_atom *av);
 void atom_arg_getsym(t_symbol **c, long idx, long ac, t_atom *av);
-#endif
-#if __MSP__
-void main(void)
-{
-	setup((t_messlist **)&adsr_class, (method)adsr_new, (method)dsp_free, 
-		  (short)sizeof(t_adsr), 0, A_GIMME, 0);
-	addmess((method)adsr_dsp, "dsp", A_CANT, 0);
-	addmess((method)adsr_assist,"assist",A_CANT,0);
-	addmess ((method)adsr_list, "list", A_GIMME, 0);
-	//  addmess ((method)adsr_manual_override, "manual_override", A_LONG, 0);
-	addmess ((method)adsr_mute, "mute", A_FLOAT, 0);
-	//  addmess ((method)adsr_tempomode, "tempomode", A_GIMME, 0);
-	addbang((method)adsr_bang);
-	addfloat((method)adsr_set_a);
-	addftx((method)adsr_set_d,5);
-	addftx((method)adsr_set_s,4);
-	addftx((method)adsr_set_r,3);
-	addftx((method)adsr_set_gain1,2);
-	addftx((method)adsr_set_gain2,1);
-	dsp_initclass();
-	post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
-}
-void adsr_assist (t_adsr *x, void *b, long msg, long arg, char *dst)
-{
-	
-	if (msg==1) {
-		switch (arg) {
-			case 0:
-				sprintf(dst,"(float) Attack / (bang) Trigger");
-				break;
-			case 1:
-				sprintf(dst,"(float) Decay");
-				break;
-			case 2:
-				sprintf(dst,"(float) Sustain");
-				break;
-			case 3:
-				sprintf(dst,"(float) Release");
-				break;
-			case 4:
-				sprintf(dst,"(float) Gain1");
-				break;
-			case 5:
-				sprintf(dst,"(float) Gain2");
-				break;
-			case 6:
-				sprintf(dst,"(float) Tempo");
-				break;
-		}
-	} else if (msg==2) {
-		sprintf(dst,"(signal) ADSR Output");
-	}
-}
-#endif
 
-#if __PD__
 void adsr_tilde_setup(void){
 	adsr_class = class_new(gensym("adsr~"), (t_newmethod)adsr_new, 
 						   0,sizeof(t_adsr), 0,A_GIMME,0);
@@ -139,9 +75,9 @@ void adsr_tilde_setup(void){
 	class_addmethod(adsr_class,(t_method)adsr_set_gain1,gensym("set_gain1"),A_FLOAT,0);
 	class_addmethod(adsr_class,(t_method)adsr_set_gain2,gensym("set_gain2"),A_FLOAT,0);
 	class_addbang(adsr_class,(t_method)adsr_bang);
-	post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
+	potpourri_announce(OBJECT_NAME);
 }
-#endif
+
 
 void adsr_mute(t_adsr *x, t_floatarg f)
 {
@@ -244,11 +180,8 @@ void adsr_set_r(t_adsr *x, t_floatarg f)
 
 void adsr_list (t_adsr *x, t_atom *msg, short argc, t_atom *argv)
 {
-	//  int i;
-	//  float val;
-	//  int sum;
-	//  float fac;
-	
+    t_atom *fraud; // make compiler happy
+    fraud = msg;
 	x->rsamps = x->tsamps - (x->asamps+x->dsamps+x->ssamps);	
 	if( x->rsamps < 0 ) 
 		x->rsamps = 0;
@@ -270,36 +203,16 @@ void adsr_list (t_adsr *x, t_atom *msg, short argc, t_atom *argv)
     x->ebreak3 = x->asamps+x->dsamps+x->ssamps;
 	
 }
-/*
-#if __PD__
-	void atom_arg_getfloat(float *c, long idx, long ac, t_atom *av) {
-		float tmp;
-		tmp = atom_getfloatarg(idx, ac, av);
-		*c = tmp;
-	}
-#endif
-*/
 
-void *adsr_new(t_symbol *s, int argc, t_atom *argv)
+static void *adsr_new(t_symbol *s, int argc, t_atom *argv)
 {
-#if __MSP__
-	t_adsr *x = (t_adsr *)newobject(adsr_class);
-	dsp_setup((t_pxobject *)x,1); // no inputs
-	outlet_new((t_pxobject *)x, "signal");
-	x->x_obj.z_misc |= Z_NO_INPLACE;
-	floatin((t_object *)x, 1);
-	floatin((t_object *)x, 2);
-	floatin((t_object *)x, 3);
-	floatin((t_object *)x, 4);
-	floatin((t_object *)x, 5);
-	
-#endif
-	
-#if __PD__
+
 	t_adsr *x = (t_adsr *)pd_new(adsr_class);
+    t_symbol *fraud; // make compiler happy
+    fraud = s;
 	outlet_new(&x->x_obj, gensym("signal"));
-#endif
 	
+   
 	x->srate = sys_getsr();
 	if(!x->srate){
 		error("zero sampling rate, setting to 44100");
@@ -318,8 +231,7 @@ void *adsr_new(t_symbol *s, int argc, t_atom *argv)
 	atom_arg_getfloat(&x->r,3,argc,argv);
 	atom_arg_getfloat(&x->egain1,4,argc,argv);
 	atom_arg_getfloat(&x->egain2,5,argc,argv);
-//	post("%f %f %f %f %f %f",x->a,x->d,x->s,x->r,x->egain1,x->egain2);
-//	post("{Is Pd afraid of curly braces?} {{}}\n");
+
 	x->a *= .001;
 	x->d *= .001;
 	x->s *= .001;
@@ -337,7 +249,7 @@ void *adsr_new(t_symbol *s, int argc, t_atom *argv)
 	x->counter = 0;
 	x->click_gain = 0.0;
 	x->mute = 0;
-	return (x);
+	return x;
 }
 
 t_int *adsr_perform(t_int *w)
@@ -400,10 +312,8 @@ t_int *adsr_perform(t_int *w)
 	return (w+5);
 }		
 
-void adsr_dsp(t_adsr *x, t_signal **sp, short *count)
+void adsr_dsp(t_adsr *x, t_signal **sp)
 {
-	//  long i;
-	
 	if(x->srate != sp[0]->s_sr ){
 		x->srate = sp[0]->s_sr;
 		x->asamps = x->a * x->srate;
@@ -416,26 +326,9 @@ void adsr_dsp(t_adsr *x, t_signal **sp, short *count)
 		x->ebreak3 = x->asamps+x->dsamps+x->ssamps;
 		x->counter = 0;	
 	}
-	dsp_add(adsr_perform, 4, x, 	  sp[0]->s_vec,   sp[1]->s_vec,sp[0]->s_n);
+	dsp_add(adsr_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
 }
 
-/*** MSP helper functions **/
-#if __PD__
 
-
-void atom_arg_getfloat(float *c, long idx, long ac, t_atom *av) 
-{
-		if (c&&ac&&av&&(idx<ac)) {
-			*c = atom_getfloat(av+idx);
-		}
-}
-
-void atom_arg_getsym(t_symbol **c, long idx, long ac, t_atom *av)
-{
-	if (c&&ac&&av&&(idx<ac)) {
-		*c = atom_getsymbol(av+idx);
-	} 
-}
-#endif
 
 

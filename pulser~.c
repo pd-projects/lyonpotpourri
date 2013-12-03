@@ -6,24 +6,14 @@
 
 #define OBJECT_NAME "pulser~"
 
-#if __PD__
 static t_class *pulser_class;
-#endif
 
-#if __MSP__
-void *pulser_class;
-#endif
 
 typedef struct _pulser
 {
-#if __MSP__
-  t_pxobject x_obj;
-#endif
-#if __PD__
+
   t_object x_obj;
   float x_f;
-#endif
-
   int components;
   float global_gain;
   float *wavetab;
@@ -40,28 +30,12 @@ typedef struct _pulser
 void *pulser_new(t_symbol *s, int argc, t_atom *argv);
 
 t_int *pulser_perform(t_int *w);
-void pulser_dsp(t_pulser *x, t_signal **sp, short *count);
-void pulser_assist(t_pulser *x, void *b, long m, long a, char *s);
+void pulser_dsp(t_pulser *x, t_signal **sp);
 void pulser_mute(t_pulser *x, t_floatarg toggle);
 void pulser_harmonics(t_pulser *x, t_floatarg c);
 void pulser_float(t_pulser *x, double f);
 void pulser_free(t_pulser *x);
 
-#if __MSP__
-void main(void)
-{
-  setup((t_messlist **)&pulser_class,(method) pulser_new, (method)pulser_free, 
-  (short)sizeof(t_pulser), 0L, A_GIMME, 0);
-  addmess((method)pulser_dsp, "dsp", A_CANT, 0);
-  addmess((method)pulser_assist,"assist",A_CANT,0);
-  addmess((method)pulser_mute,"mute",A_FLOAT,0);
-  addmess((method)pulser_harmonics,"harmonics",A_FLOAT,0);
-  addfloat((method)pulser_float);
-  dsp_initclass();
-  post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
-}
-#endif
-#if __PD__
 void pulser_tilde_setup(void){
   pulser_class = class_new(gensym("pulser~"), (t_newmethod)pulser_new, 
 			    (t_method)pulser_free,sizeof(t_pulser), 0,A_GIMME,0);
@@ -69,29 +43,12 @@ void pulser_tilde_setup(void){
   class_addmethod(pulser_class,(t_method)pulser_dsp,gensym("dsp"),0);
   class_addmethod(pulser_class,(t_method)pulser_mute,gensym("mute"),A_FLOAT,0);
   class_addmethod(pulser_class,(t_method)pulser_harmonics,gensym("harmonics"),A_FLOAT,0);
-  post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
+  potpourri_announce(OBJECT_NAME);
 }
-#endif
 
 void pulser_mute(t_pulser *x, t_floatarg toggle)
 {
 	x->mute = toggle;
-}
-
-void pulser_assist (t_pulser *x, void *b, long msg, long arg, char *dst)
-{
-  if (msg==1) {
-    switch (arg) {
-    case 0:
-      sprintf(dst,"(signal/float) Frequency");
-      break;
-    case 1:
-      sprintf(dst,"(signal/float) Pulse Width");
-      break;
-    }
-  } else if (msg==2) {
-    sprintf(dst,"(signal) Output");
-  }
 }
 
 void pulser_harmonics(t_pulser *x, t_floatarg c)
@@ -104,44 +61,20 @@ void pulser_harmonics(t_pulser *x, t_floatarg c)
 	x->global_gain = 1.0 / (float) x->components ;
 	// reset phases too?
 }
-#if __MSP__
-void pulser_float(t_pulser *x, double f)
-{
-int inlet = ((t_pxobject*)x)->z_in;
 
-	if (inlet == 0)
-	{
-		x->frequency = f;
-	} 
-	else if (inlet == 1 )
-	{
-		x->pulsewidth = f;
-	}
-}
-#endif
 void pulser_free(t_pulser *x)
 {
-#if __MSP__
-	dsp_free((t_pxobject *)x);
-#endif
 	free(x->phases);
 	free(x->wavetab);
 }
 
 void *pulser_new(t_symbol *s, int argc, t_atom *argv)
 {
-//  float srate;
   int i;
-#if __MSP__
-  t_pulser *x = (t_pulser *)newobject(pulser_class);
-  dsp_setup((t_pxobject *)x,2);
-  outlet_new((t_pxobject *)x, "signal");
-#endif
-#if __PD__
+
   t_pulser *x = (t_pulser *)pd_new(pulser_class);
   inlet_new(&x->x_obj, &x->x_obj.ob_pd,gensym("signal"), gensym("signal"));
   outlet_new(&x->x_obj, gensym("signal"));
-#endif
   x->sr = sys_getsr();
   if(!x->sr){
     error("zero sampling rate, setting to 44100");
@@ -179,10 +112,7 @@ t_int *pulser_perform(t_int *w)
 {
 
   int i,j;
-//  float mygain ;
   float gain;
-
-//  float phs;
   float incr;
 
   float outsamp;
@@ -258,7 +188,7 @@ t_int *pulser_perform(t_int *w)
   return (w+6);
 }		
 
-void pulser_dsp(t_pulser *x, t_signal **sp, short *count)
+void pulser_dsp(t_pulser *x, t_signal **sp)
 {
   long i;
 
@@ -275,12 +205,8 @@ void pulser_dsp(t_pulser *x, t_signal **sp, short *count)
   	}
   }
   for( i = 0; i < 2; i++){
-#if __MSP__
-  	x->connected[i] = count[i];
-#endif
-#if __PD__
+
   	x->connected[i] = 1;
-#endif
   }
   dsp_add(pulser_perform, 5, x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }

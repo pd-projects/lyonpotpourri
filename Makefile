@@ -6,7 +6,7 @@ LIBRARY_NAME = lyonpotpourri
 # add your .c source files, one object per file, to the SOURCES
 # variable, help files will be included automatically, and for GUI
 # objects, the matching .tcl file too
-SOURCES = adsr~.c bashfest~.c buffet~.c bvplay~.c channel~.c chopper~.c clean_selector~.c click2bang~.c click2float~.c clickhold~.c distortion~.c dmach~.c expflam~.c flanjah~.c function~.c granola~.c granulesf~.c granule~.c impulse~.c kbuffer~.c killdc~.c magfreq_analysis~.c markov~.c mask~.c oscil~.c phasemod~.c player~.c pulser~.c rtrig~.c samm~.c sigseq~.c vdb~.c vdp~.c waveshape~.c
+SOURCES = adsr~.c bashfest~.c buffet~.c bvplay~.c channel~.c chopper~.c clean_selector~.c click2bang~.c click2float~.c clickhold~.c distortion~.c dmach~.c expflam~.c flanjah~.c function~.c granola~.c granulesf~.c granule~.c impulse~.c kbuffer~.c killdc~.c magfreq_analysis~.c markov~.c mask~.c oscil~.c phasemod~.c player~.c pulser~.c rtrig~.c samm~.c sigseq~.c vdb~.c vdp~.c waveshape~.c epluribus~.c dynss~.c counter~.c latch~.c sarec~.c convolver~.c npan~.c shoehorn~.c rotapan~.c sel~.c squash~.c windowvec~.c cartopol~.c poltocar~.c arrayfilt~.c splitspec~.c stutter~.c greater~.c vecdex~.c quadpan~.c splitbank~.c click~.c
 
 # list all pd objects (i.e. myobject.pd) files here, and their helpfiles will
 # be included automatically
@@ -28,7 +28,7 @@ EXTRA_DIST = MSPd.h PenroseOscil.h PenroseRand.h bashfest.h fftease.h ugens.h
 UNITTESTS = 
 
 
-SHARED_SOURCE = bashfest_dsp.c bashfest_helper.c ellipse.c PenroseOscil.c PenroseRand.c bloscbank.c convert.c fft.c fft4.c fftease_setup.c fold.c leanconvert.c leanunconvert.c makewindows.c overlapadd.c power_of_two.c qsortE.c unconvert.c
+SHARED_SOURCE = bashfest_dsp.c bashfest_helper.c ellipse.c PenroseOscil.c PenroseRand.c bloscbank.c convert.c fft.c fft4.c fftease_setup.c fold.c leanconvert.c leanunconvert.c makewindows.c overlapadd.c power_of_two.c qsortE.c unconvert.c from_msp.c
 SHARED_LIB = lib$(LIBRARY_NAME).$(SHARED_EXTENSION)
 
 #------------------------------------------------------------------------------#
@@ -50,7 +50,9 @@ ALL_LIBS =
 #------------------------------------------------------------------------------#
 
 # these can be set from outside without (usually) breaking the build
-CFLAGS = -Wall -W -g
+# CFLAGS = -Wall -W -g
+# Skip irritating warnings:
+CFLAGS = -w -g
 LDFLAGS =
 LIBS =
 
@@ -104,8 +106,8 @@ ifeq ($(UNAME),Darwin)
     EXTENSION = pd_darwin
     SHARED_EXTENSION = dylib
     OS = macosx
-    PD_PATH = /Applications/Pd-extended.app/Contents/Resources
-    OPT_CFLAGS = -ftree-vectorize -ftree-vectorizer-verbose=2 -fast
+    PD_PATH = 
+    OPT_CFLAGS = -ftree-vectorize 
 # build universal 32-bit on 10.4 and 32/64 on newer
     ifeq ($(shell uname -r | sed 's|\([0-9][0-9]*\)\.[0-9][0-9]*\.[0-9][0-9]*|\1|'), 8)
       FAT_FLAGS = -arch ppc -arch i386 -mmacosx-version-min=10.4
@@ -122,7 +124,7 @@ ifeq ($(UNAME),Darwin)
     # if the 'pd' binary exists, check the linking against it to aid with stripping
     BUNDLE_LOADER = $(shell test ! -e $(PD_PATH)/bin/pd || echo -bundle_loader $(PD_PATH)/bin/pd)
     ALL_LDFLAGS += $(FAT_FLAGS) -headerpad_max_install_names -bundle $(BUNDLE_LOADER) \
-	-undefined dynamic_lookup -L/sw/lib
+	-undefined dynamic_lookup 
     SHARED_LDFLAGS += $(FAT_FLAGS) -dynamiclib -undefined dynamic_lookup \
 	-install_name @loader_path/$(SHARED_LIB) -compatibility_version 1 -current_version 1.0
     ALL_LIBS += -lc $(LIBS_macosx)

@@ -66,15 +66,8 @@ typedef struct
 
 typedef struct _bashfest
 {
-#if __MSP__
-  t_pxobject x_obj;
-  t_buffer *wavebuf; // holds waveform samples
-#endif
-#if __PD__
   t_object x_obj;
-  float x_f;
-#endif 
-  
+  float x_f;  
   float sr; // sampling rate
   t_symbol *wavename; // name of waveform buffer
   short hosed; // buffers are bad

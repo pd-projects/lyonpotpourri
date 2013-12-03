@@ -1,20 +1,17 @@
-#N canvas 9 477 479 329 10;
-#X obj 182 168 adsr~;
-#X msg 182 29 bang;
-#X obj 25 193 osc~ 400;
-#X obj 166 209 *~;
-#X obj 166 239 *~ 0.1;
-#X obj 166 270 dac~;
-#X msg 275 243 \; pd dsp \$1;
-#X obj 275 201 tgl 30 0 empty empty empty 0 -6 0 8 -16366 -1 -1 0 1
+#N canvas 487 392 494 413 10;
+#X obj 180 203 adsr~;
+#X msg 180 64 bang;
+#X obj 23 228 osc~ 400;
+#X obj 162 244 *~;
+#X obj 162 274 *~ 0.1;
+#X obj 162 305 dac~;
+#X msg 273 278 \; pd dsp \$1;
+#X obj 273 236 tgl 30 0 empty empty empty 0 -6 0 8 -16366 -1 -1 0 1
 ;
-#X msg 242 47 10 50 50 50;
-#X msg 107 104 mute \$1;
-#X obj 107 69 tgl 30 0 empty empty empty 0 -6 0 8 -16366 -1 -1 0 1
-;
-#X text 239 32 adsr data as list;
-#X msg 250 67 100 50 100 500;
-#X obj 368 31 loadbang;
+#X msg 240 82 10 50 50 50;
+#X text 237 67 adsr data as list;
+#X msg 248 102 100 50 100 500;
+#X obj 366 66 loadbang;
 #N canvas 0 22 673 325 individual-adsr-elements 0;
 #X obj 62 244 outlet;
 #X msg 62 158 set_a \$1;
@@ -58,12 +55,16 @@
 #X connect 14 4 7 0;
 #X connect 14 5 8 0;
 #X connect 15 0 13 0;
-#X restore 261 98 pd individual-adsr-elements;
-#X obj 283 152 samm~ 40 1;
-#X text 178 12;
-#X text 233 135;
-#X text 18 295 adsr~ - An ADSR envelope triggered by signal clicks
+#X restore 259 133 pd individual-adsr-elements;
+#X obj 281 187 samm~ 40 1;
+#X text 24 331 adsr~ - An ADSR envelope triggered by signal clicks
 or bangs;
+#X obj 26 4 cnv 15 155 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X obj 26 351 cnv 15 300 20 empty empty http://disis.music.vt.edu/eric
+20 12 0 14 -203904 -13381 0;
+#X text 176 44 trigger ADSR;
+#X text 278 169 slow click metronome;
 #X connect 0 0 3 1;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
@@ -72,9 +73,7 @@ or bangs;
 #X connect 4 0 5 1;
 #X connect 7 0 6 0;
 #X connect 8 0 0 0;
-#X connect 9 0 0 0;
-#X connect 10 0 9 0;
+#X connect 10 0 0 0;
+#X connect 11 0 8 0;
 #X connect 12 0 0 0;
-#X connect 13 0 8 0;
-#X connect 14 0 0 0;
-#X connect 15 0 0 0;
+#X connect 13 0 0 0;

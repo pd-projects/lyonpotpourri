@@ -7,8 +7,8 @@
 %define buildroot %{_topdir}/%{name}-%{version}-root
 
 BuildRoot:	%{buildroot}
-Summary: 		replace me with a summary of your library
-License: 		GPL
+Summary: 		Various externals for Pd
+License: 		MIT
 Name: 			%{name}
 Version: 		%{version}
 Release: 		%{release}

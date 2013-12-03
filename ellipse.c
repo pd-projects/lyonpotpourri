@@ -20,7 +20,7 @@ float ellipse(float x, LSTRUCT *eel, int nsects, float xnorm)
 void ellipset(float *list, LSTRUCT *eel, int  *nsects, float *xnorm)
 {
 /* the first argument in the list is the number of sections */
-  int m,i,j;
+  int m,i;
   *nsects = (int)list[0];
   if(*nsects > MAXSECTS) { 
     error("sorry, only configured for %d sections",MAXSECTS); 

@@ -1,0 +1,74 @@
+#N canvas 899 360 830 536 10;
+#X obj 68 299 squash~;
+#X obj 438 307 soundfiler;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array samples 63024 float 2;
+#X coords 0 1 63024 -1 200 140 1;
+#X restore 441 347 graph;
+#X msg 438 278 read -resize ./sound/voice.wav samples;
+#X obj 36 201 tabread4~ samples;
+#X obj 36 171 *~ 44100;
+#X obj 36 128 phasor~ 1;
+#X obj 11 434 dac~;
+#X obj 336 344 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 336 371 \; pd dsp \$1;
+#N canvas 604 621 450 300 gate 0;
+#X obj 51 35 inlet;
+#X obj 116 36 inlet~;
+#X obj 207 35 inlet~;
+#X obj 51 80 sel 1 0;
+#X obj 108 228 *~;
+#X obj 200 230 *~;
+#X obj 40 179 unpack f f;
+#X obj 108 266 outlet~;
+#X msg 40 131 0 1;
+#X msg 78 131 1 0;
+#X connect 0 0 3 0;
+#X connect 1 0 4 0;
+#X connect 2 0 5 0;
+#X connect 3 0 8 0;
+#X connect 3 1 9 0;
+#X connect 4 0 7 0;
+#X connect 5 0 7 0;
+#X connect 6 0 4 1;
+#X connect 6 1 5 1;
+#X connect 8 0 6 0;
+#X connect 9 0 6 0;
+#X restore 16 384 pd gate;
+#X obj 16 43 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
+;
+#X floatatom 129 365 10 0 0.1 0 - - -, f 10;
+#X msg 163 240 ratio 0.02;
+#X floatatom 36 101 5 0 0 0 - - -, f 5;
+#X msg 171 195 nt 0.001;
+#X text 208 171 set noise floor;
+#X msg 172 174 nt 0;
+#X text 236 238 set ratio (lower values give higher compression);
+#X msg 165 260 ratio 0.2;
+#X text 346 17 squash~ is based on a compression algorithm by Christopher
+Penrose. It can be useful for extreme effects \, and is notable for
+employing the overlap-add system found in FFTease externals \, though
+all processing is done in the time domain here. This processor is capable
+of generating extreme dynamic ranges. Use with caution \, with a low
+playback gain \, and do not use this external in performance until
+you are very familiar with its operation.;
+#X obj 68 335 *~ 0.02;
+#X msg 41 42 <- turn on to hear compression;
+#X connect 0 0 21 0;
+#X connect 3 0 1 0;
+#X connect 4 0 0 0;
+#X connect 4 0 10 1;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X connect 8 0 9 0;
+#X connect 10 0 7 0;
+#X connect 10 0 7 1;
+#X connect 11 0 10 0;
+#X connect 12 0 21 1;
+#X connect 13 0 0 0;
+#X connect 14 0 6 0;
+#X connect 15 0 0 0;
+#X connect 17 0 0 0;
+#X connect 19 0 0 0;
+#X connect 21 0 10 2;

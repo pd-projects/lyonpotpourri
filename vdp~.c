@@ -5,12 +5,7 @@
 #define MAX_DELAY_TIME 3600000.0 // in seconds
 #define OBJECT_NAME "vdp~"
 
-#if __MSP__
-void *vdp_class;
-#endif
-#if __PD__
 static t_class *vdp_class;
-#endif
 
 typedef struct
 {
@@ -29,13 +24,9 @@ typedef struct {
 
 typedef struct _vdp
 {
-#if __MSP__
-    t_pxobject x_obj;
-#endif
-#if __PD__
-  t_object x_obj;
-  float x_f;
-#endif	
+    
+    t_object x_obj;
+    float x_f;
 	float sr;
 	
 	t_lpf lpf;
@@ -70,9 +61,8 @@ typedef struct _vdp
 t_int *vdp_perform(t_int *w);
 
 void vdp_protect(t_vdp *x, double state);
-void vdp_dsp(t_vdp *x, t_signal **sp, short *count);
+void vdp_dsp(t_vdp *x, t_signal **sp);
 void *vdp_new(t_symbol *s, int argc, t_atom *argv);
-void vdp_assist(t_vdp *x, void *b, long m, long a, char *s);
 void vdp_float(t_vdp *x, double f);
 void vdp_mute(t_vdp *x, t_floatarg t);
 void vdp_interpolate(t_vdp *x, t_floatarg t);
@@ -87,38 +77,13 @@ int vdp_setdestbuf(t_vdp *x, t_symbol *wavename);
 void vdp_redraw(t_vdp *x);
 void vdp_free(t_vdp *x);
 
-#if __MSP__
-void vdp_int(t_vdp *x, long f);
 
-void main(void)
-{
-	setup((t_messlist **)&vdp_class, (method)vdp_new, (method)vdp_free, 
-	(short)sizeof(t_vdp), 0, A_GIMME, 0);
-	addmess((method)vdp_dsp, "dsp", A_CANT, 0);
-    addfloat((method)vdp_float);
-    addint((method)vdp_int);
-	addmess((method)vdp_assist, "assist", A_CANT, 0);
-    addmess((method)vdp_protect,"protect",A_FLOAT,0);
-	addmess((method)vdp_mute, "mute", A_FLOAT, 0);
-	addmess((method)vdp_filter, "filter", A_FLOAT, 0);
-	addmess((method)vdp_coef, "coef", A_FLOAT, 0);
-	addmess((method)vdp_show, "show", 0);
-	addmess((method)vdp_clear, "clear", 0);
-	addmess((method)vdp_inf_hold, "inf_hold", A_FLOAT, 0);
-	addmess((method)vdp_interpolate, "interpolate", A_FLOAT, 0);
-	addmess((method)vdp_copy_to_buffer, "copy_to_buffer", A_GIMME, 0);
-	dsp_initclass();
-	post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
-}
-#endif
-#if __PD__
 void vdp_tilde_setup(void)
 {
 	vdp_class = class_new(gensym("vdp~"),(t_newmethod)vdp_new,(t_method)vdp_free, sizeof(t_vdp), 0, A_GIMME,0);
 	CLASS_MAINSIGNALIN(vdp_class,t_vdp, x_f );
 	
 	class_addmethod(vdp_class,(t_method)vdp_dsp,gensym("dsp"),A_CANT,0);
-	class_addmethod(vdp_class,(t_method)vdp_assist,gensym("assist"),A_CANT,0);
 	class_addmethod(vdp_class,(t_method)vdp_protect,gensym("protect"),A_FLOAT,0);
 	class_addmethod(vdp_class,(t_method)vdp_mute,gensym("mute"),A_FLOAT,0);
 	class_addmethod(vdp_class,(t_method)vdp_filter,gensym("filter"),A_FLOAT,0);
@@ -128,9 +93,8 @@ void vdp_tilde_setup(void)
 	class_addmethod(vdp_class,(t_method)vdp_inf_hold,gensym("inf_hold"),A_FLOAT,0);
 	class_addmethod(vdp_class,(t_method)vdp_interpolate,gensym("interpolate"),A_FLOAT,0);
 	class_addmethod(vdp_class,(t_method)vdp_copy_to_buffer,gensym("copy_to_buffer"),A_GIMME,0);
-	post("%s %s",OBJECT_NAME, LYONPOTPOURRI_MSG);
+	potpourri_announce(OBJECT_NAME);
 }
-#endif
 
 void vdp_mute(t_vdp *x, t_floatarg t)
 {
@@ -154,7 +118,7 @@ void vdp_coef(t_vdp *x, t_floatarg f)
 {
 	x->lpf.coef = (float)f;
 }
-		
+
 void vdp_show(t_vdp *x)
 {
 	post("feedback %f delay %f",x->feedback, x->delay_time);
@@ -204,11 +168,11 @@ t_int *vdp_perform(t_int *w)
 	
 	if( x->mute ) {
 		/* while(n--){
-			*output++ = 0.0;
-		} */
+         *output++ = 0.0;
+         } */
 		memset( (char *)output, 0, n * sizeof(float) );
 		return (w+7);
-	} 
+	}
 	
 	fdelay = delay_samps;
 	idelay = floor(fdelay);
@@ -216,7 +180,7 @@ t_int *vdp_perform(t_int *w)
 	/* loop only for infinite hold */
 	
 	if(inf_hold){
-		while( n-- ){		
+		while( n-- ){
 			read_ptr = write_ptr;
 			outsamp = *read_ptr;
 			*write_ptr++;
@@ -245,7 +209,7 @@ t_int *vdp_perform(t_int *w)
 			if( fdelay >= len )
 				fdelay = len - 1;
 			idelay = floor(fdelay);
-		} 
+		}
 		
 		if(connections[2]){
 			feedback = *feedback_vec++;
@@ -256,7 +220,7 @@ t_int *vdp_perform(t_int *w)
 					feedback = -0.99;
 			}
 			
-		} 
+		}
 		
 		
 		/* make fdelay behave */
@@ -265,7 +229,7 @@ t_int *vdp_perform(t_int *w)
 		}
 		else if(fdelay >= len){
 			fdelay = len - 1;
-		}	
+		}
 		idelay = floor(fdelay);
 		
 		if(interpolate){
@@ -277,16 +241,16 @@ t_int *vdp_perform(t_int *w)
 			x1 = *read_ptr--;
 			if( read_ptr < startmem ){
 				read_ptr += endmem - startmem;
-			}		
+			}
 			x2 = *read_ptr;
 			outsamp = x1 + frac * (x2 - x1);
 			
-		} 
-		else { // no interpolation case 
+		}
+		else { // no interpolation case
 			read_ptr = write_ptr - idelay;
 			if( read_ptr < startmem ){
 				read_ptr += len;
-			}	
+			}
 			outsamp = *read_ptr;
 			
 		}
@@ -315,57 +279,47 @@ t_int *vdp_perform(t_int *w)
 	
 	
 }
- 
+
 void *vdp_new(t_symbol *s, int argc, t_atom *argv)
 {
-int i;
-#if __MSP__
-	t_vdp *x = (t_vdp *)newobject(vdp_class);
-	dsp_setup((t_pxobject *)x,3);
-	outlet_new((t_object *)x, "signal");
-    x->x_obj.z_misc |= Z_NO_INPLACE;
-#endif
-#if __PD__
+    int i;
+
 	t_vdp *x = (t_vdp *)pd_new(vdp_class);
 	for(i = 0; i < 2; i++){
 		inlet_new(&x->x_obj, &x->x_obj.ob_pd,gensym("signal"), gensym("signal"));
 	}
 	outlet_new(&x->x_obj, gensym("signal") );
-#endif
 	x->sr = sys_getsr();
 	if(!x->sr){
 		error("zero sampling rate - set to 44100");
 		x->sr = 44100;
 	}
 	// DSP CONFIG
-
-
+    
+    
 	// SET DEFAULTS
 	x->maxdel = 50.0; // milliseconds
 	x->feedback = 0.5;
 	x->delay_time  = 0.0;
-
-/*	
-	atom_arg_getfloat(&x->maxdel,0,argc,argv);
-	atom_arg_getfloat(&x->delay_time,1,argc,argv);
-	atom_arg_getfloat(&x->feedback,2,argc,argv);
-*/
+    
+    /*
+     atom_arg_getfloat(&x->maxdel,0,argc,argv);
+     atom_arg_getfloat(&x->delay_time,1,argc,argv);
+     atom_arg_getfloat(&x->feedback,2,argc,argv);
+     */
 	x->maxdel = atom_getfloatarg(0,argc,argv);
 	x->delay_time = atom_getfloatarg(1,argc,argv);
 	x->feedback = atom_getfloatarg(2,argc,argv);
-	x->interpolate = atom_getfloatarg(3,argc,argv);   
+	x->interpolate = atom_getfloatarg(3,argc,argv);
 	if(!x->maxdel)
 		x->maxdel = 50.0;
-		
+    
 	vdp_init(x,0);
 	return (x);
 }
 
 void vdp_free(t_vdp *x)
 {
-#if __MSP__
-	dsp_free((t_pxobject *)x);
-#endif
 	free(x->delay_line);
 }
 
@@ -377,102 +331,60 @@ void vdp_clear(t_vdp *x)
 
 void vdp_init(t_vdp *x,short initialized)
 {
-//int i;
-
-if(!initialized){
-	x->feedback_protect = 0;
-	x->interpolate = 1;
-	x->filter = 0;
-	x->inf_hold = 0;
-	if( x->maxdel < .00001 ){
-		x->maxdel = .00001;
-	}
-	if( x->maxdel > MAX_DELAY_TIME ){
-		error("%s: %f is too long, delay time set to max of %f",OBJECT_NAME,x->maxdel, MAX_DELAY_TIME);
-		x->maxdel = MAX_DELAY_TIME;
-	}
-	x->len = x->maxdel * .001 * x->sr;
-	x->lpf.coef = 0.5;
-	x->lpf.x1 = 0.0;
-	x->delay_line = (float *) calloc((x->len + 2), sizeof(float));
-	x->destbuf = (t_guffer *) calloc(1,sizeof(t_guffer));
-	x->phs = 0;
-	x->mute = 0;
-	x->tap = 0;
-} else {
-    x->len = x->maxdel * .001 * x->sr;
-	x->delay_line = (float *) realloc(x->delay_line, (x->len + 2) * sizeof(float));
-	memset((char*)x->delay_line,0,(x->len + 2) * sizeof(float));
+    //int i;
+    
+    if(!initialized){
+        x->feedback_protect = 0;
+        x->interpolate = 1;
+        x->filter = 0;
+        x->inf_hold = 0;
+        if( x->maxdel < .00001 ){
+            x->maxdel = .00001;
+        }
+        if( x->maxdel > MAX_DELAY_TIME ){
+            error("%s: %f is too long, delay time set to max of %f",OBJECT_NAME,x->maxdel, MAX_DELAY_TIME);
+            x->maxdel = MAX_DELAY_TIME;
+        }
+        x->len = x->maxdel * .001 * x->sr;
+        x->lpf.coef = 0.5;
+        x->lpf.x1 = 0.0;
+        x->delay_line = (float *) calloc((x->len + 2), sizeof(float));
+        x->destbuf = (t_guffer *) calloc(1,sizeof(t_guffer));
+        x->phs = 0;
+        x->mute = 0;
+        x->tap = 0;
+    } else {
+        x->len = x->maxdel * .001 * x->sr;
+        x->delay_line = (float *) realloc(x->delay_line, (x->len + 2) * sizeof(float));
+        memset((char*)x->delay_line,0,(x->len + 2) * sizeof(float));
+    }
+    x->startmem = x->delay_line;
+    x->endmem = x->startmem + x->len;
+    // x->endmem = x->startmem + (x->len - 1);
+    
+    x->write_ptr = x->startmem;
+    /*
+     post("startmem %d endmem %d len %d diff %d diffback %d", x->startmem, x->endmem, x->len, x->endmem - x->startmem, ( x->endmem - x->startmem) /sizeof(float));
+     */
 }
-x->startmem = x->delay_line;
-x->endmem = x->startmem + x->len;
-// x->endmem = x->startmem + (x->len - 1);
 
-x->write_ptr = x->startmem;
-/*
-post("startmem %d endmem %d len %d diff %d diffback %d", x->startmem, x->endmem, x->len, x->endmem - x->startmem, ( x->endmem - x->startmem) /sizeof(float));
-*/
-}
-
-void vdp_dsp(t_vdp *x, t_signal **sp, short *count)
+void vdp_dsp(t_vdp *x, t_signal **sp)
 {
 	// DSP CONFIG
-#if __MSP__
-	x->connections[1] = count[1];
-	x->connections[2] = count[2];
-#endif
-#if __PD__
 	x->connections[1] = 1;
 	x->connections[2] = 1;
-#endif
-
+    
 	if(x->sr != sp[0]->s_sr){
 		x->sr = sp[0]->s_sr;
 		vdp_init(x,1);
 	}
-   	 	dsp_add(vdp_perform, 6, x, 
-    		sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, 
+    dsp_add(vdp_perform, 6, x,
+    		sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
     		sp[0]->s_n);
-  
+    
 }
 
-void vdp_int(t_vdp *x, long tog)
-{
-	vdp_float(x,(float)tog);	
-}
 
-void vdp_float(t_vdp *x, double df) // Look at floats at inlets
-{
-#if __MSP__
-float f = (float)df;
-
-	int inlet = x->x_obj.z_in;
-	
-	if (inlet == 1)
-	{
-		if(f > 0.0 && f < x->maxdel){
-			x->delay_time = f;
-			x->delay_samps = f * .001 * x->sr;
-			x->tap = 0;
-		} else {
-			error("delaytime %f out of range [0.0 - %f]",f,x->maxdel);
-			return;
-		}
-	
-	}
-	else if (inlet == 2)
-	{
-		// post("feedback is now %f",x->feedback);
-		x->feedback = f;
-		if( x->feedback_protect ) {
-			if( x->feedback > 1.0)
-				x->feedback = 1.0;
-			if( x->feedback < -1.0 )
-				x->feedback = -1.0;
-		}
-	}
-#endif
-}
 
 void vdp_protect(t_vdp *x, double state)
 {
@@ -481,16 +393,16 @@ void vdp_protect(t_vdp *x, double state)
 
 void vdp_copy_to_buffer(t_vdp *x, t_symbol *msg, short argc, t_atom *argv)
 {
-t_symbol *destname;
-
-float *b_samples = x->delay_line;
-long b_nchans = 1;	
-long b_frames = x->len + 2;
-
-float *b_dest_samples;
-long b_dest_nchans;	
-long b_dest_frames;
-
+    t_symbol *destname;
+    
+    float *b_samples = x->delay_line;
+    long b_nchans = 1;
+    long b_frames = x->len + 2;
+    
+    float *b_dest_samples;
+    long b_dest_nchans;
+    long b_dest_frames;
+    
 	
 	destname = atom_getsymarg(0,argc,argv);
 	
@@ -502,7 +414,7 @@ long b_dest_frames;
 	b_dest_nchans = x->destbuf->b_nchans;
 	b_dest_frames = x->destbuf->b_frames;
 	
-
+    
 	if(b_nchans != 1){
 		error("%s: buffer must be mono",OBJECT_NAME);
 		return;
@@ -519,65 +431,40 @@ long b_dest_frames;
 	
 	/* now copy segment */
 	memcpy(b_dest_samples, b_samples, b_frames * 1 * sizeof(float) );
-#if __PD__
 	vdp_redraw(x);
-#endif
 }
 
 int vdp_setdestbuf(t_vdp *x, t_symbol *wavename)
 {
-#if __MSP__
-	t_buffer *b;
-	if ((b = (t_buffer *)(wavename->s_thing)) && ob_sym(b) == gensym("buffer~")) {
-    	if( b->b_nchans > 1 ){
-      		error("%s; wavetable must be a mono",OBJECT_NAME);
-      		return(0);
 
-    	} else {
-  //  	    x->destbuf = b;
- 		x->destbuf->b_nchans = b->b_nchans;
-		x->destbuf->b_frames = b->b_frames;
-		x->destbuf->b_samples = b->b_samples;
-		x->destbuf->b_valid = b->b_valid;
-		x->destbuf->wavename = wavename;
-			return(1);
-    	}		
-	} else {
-    	error("%s: no such buffer~ %s",OBJECT_NAME, wavename->s_name);
-    	return(0);
-	}
-#endif
-#if __PD__
 	t_garray *a;
-//	t_symbol *wavename = x->buffername;
+    //	t_symbol *wavename = x->buffername;
 	int b_frames;
 	float *b_samples;
 	if (!(a = (t_garray *)pd_findbyclass(wavename, garray_class))) {
 		if (*wavename->s_name) pd_error(x, "%s: %s: no such array",OBJECT_NAME,wavename->s_name);
-
+        
 		x->destbuf->b_valid = 0;
 		return 0;
     }
 	else if (!garray_getfloatarray(a, &b_frames, &b_samples)) {
 		pd_error(x, "%s: bad array for %s", wavename->s_name,OBJECT_NAME);
-		x->destbuf->b_valid = 0; 
+		x->destbuf->b_valid = 0;
 		return 0;
     }
 	else  {
  		x->destbuf->b_nchans = 1;
 		x->destbuf->b_frames = b_frames;
 		x->destbuf->b_samples = b_samples;
-		x->destbuf->b_valid = 1;	
+		x->destbuf->b_valid = 1;
 		x->destbuf->wavename = wavename;
 		garray_usedindsp(a);
-		return(1);	
+		return(1);
 	}
-#endif
 }
 
 void vdp_redraw(t_vdp *x)
 {
-#if __PD__
 	t_garray *a;
 	t_symbol *wavename = x->destbuf->wavename;
 	if (!(a = (t_garray *)pd_findbyclass(wavename, garray_class))) {
@@ -587,27 +474,4 @@ void vdp_redraw(t_vdp *x)
 	else  {
 		garray_redraw(a);
 	}
-#endif
 }
-
-void vdp_assist(t_vdp *x, void *b, long msg, long arg, char *dst)
-{
-	if (msg==1) {
-		switch (arg) {
-			case 0: sprintf(dst,"(signal) Input");break;
-			case 1: sprintf(dst,"(signal/float) Delay Time");break;
-			case 2: sprintf(dst,"(signal/float) Feedback");break;
-
-		}
-	} else if (msg==2) {
-		switch (arg) {
-			case 0:
-				sprintf(dst,"(signal) Output ");
-				break;
-
-		}
-
-	}
-}
-
-
