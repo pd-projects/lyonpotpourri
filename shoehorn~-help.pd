@@ -1,26 +1,24 @@
-#N canvas 789 604 511 402 10;
-#X msg 288 111 \; pd dsp \$1;
-#X obj 288 73 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 74 117 osc~ 340;
-#X obj 74 283 *~ 0.01;
-#X obj 149 282 *~ 0.01;
-#X obj 74 338 dac~;
-#X obj 111 168 osc~ 546;
-#X obj 92 141 osc~ 739;
-#X obj 74 246 shoehorn~ 5 2;
-#X obj 130 193 osc~ 1666;
-#X obj 149 216 osc~ 665;
-#X text 64 22 shoehorn~ collapses an arbitrary number of input channels
+#N canvas 650 284 410 405 10;
+#X obj 11 117 osc~ 340;
+#X obj 11 283 *~ 0.01;
+#X obj 86 282 *~ 0.01;
+#X obj 11 338 dac~;
+#X obj 48 168 osc~ 546;
+#X obj 29 141 osc~ 739;
+#X obj 11 246 shoehorn~ 5 2;
+#X obj 67 193 osc~ 1666;
+#X obj 86 216 osc~ 665;
+#X text -2 47 shoehorn~ collapses an arbitrary number of input channels
 into an arbitrary number of output channels \, by spacing them from
 left to right with equal power panning.;
-#X connect 1 0 0 0;
-#X connect 2 0 8 0;
-#X connect 3 0 5 0;
-#X connect 4 0 5 1;
-#X connect 6 0 8 2;
-#X connect 7 0 8 1;
-#X connect 8 0 3 0;
-#X connect 8 1 4 0;
-#X connect 9 0 8 3;
-#X connect 10 0 8 4;
+#X obj -3 9 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X connect 0 0 6 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 1;
+#X connect 4 0 6 2;
+#X connect 5 0 6 1;
+#X connect 6 0 1 0;
+#X connect 6 1 2 0;
+#X connect 7 0 6 3;
+#X connect 8 0 6 4;

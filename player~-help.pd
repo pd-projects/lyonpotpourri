@@ -1,29 +1,27 @@
-#N canvas 543 140 601 507 10;
+#N canvas 428 168 584 467 10;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array sf4player 155948 float 2;
-#X coords 0 1 155948 -1 200 140 1;
-#X restore 234 17 graph;
-#X obj 38 277 player~ sf4player;
-#X obj 38 345 dac~;
-#N canvas 502 273 712 535 load-a-sound 0;
+#X array sf4player 155944 float 2;
+#X coords 0 1 155944 -1 200 140 1;
+#X restore 358 63 graph;
+#X obj 26 344 dac~;
+#N canvas 113 308 712 535 load-a-sound 0;
 #X obj 49 170 soundfiler;
 #X obj 49 119 openpanel;
 #X obj 49 92 inlet;
 #X msg 49 142 read -resize \$1 sf4player;
-#X msg 339 115 read -resize examples/bell.aiff sf4player;
+#X msg 339 115 read -resize sound/bell.aiff sf4player;
+#X obj 339 77 loadbang;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 0 0;
 #X connect 4 0 0 0;
-#X restore 145 391 pd load-a-sound;
-#X obj 145 362 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X connect 5 0 4 0;
+#X restore 133 390 pd load-a-sound;
+#X obj 133 333 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X msg 33 427 \; pd dsp \$1;
-#X obj 33 379 tgl 40 0 empty empty empty 0 -6 0 8 -261185 -1 -1 0 1
-;
-#X floatatom 302 187 5 0 0 0 - increment -;
-#X obj 168 334 hsl 128 15 -2 2 0 0 increment empty increment -2 -6
-0 8 -143299 -1 -1 10100 1;
+#X floatatom 286 190 5 0 0 0 - increment -, f 5;
+#X obj 266 424 hsl 128 15 -2 2 0 0 increment empty increment -2 -6
+0 10 -143299 -1 -1 0 1;
 #N canvas 144 217 774 527 triggers 0;
 #X obj 93 107 samm~ 60 1;
 #X msg 93 79 mute \$1;
@@ -33,9 +31,9 @@
 #X obj 208 138 impulse~;
 #X msg 208 113 bang;
 #X msg 205 72 tempo \$1;
-#X floatatom 205 52 5 0 0 0 - - -;
+#X floatatom 205 52 5 0 0 0 - - -, f 5;
 #X obj 208 25 hsl 128 15 20 200 0 0 empty empty empty -2 -6 0 8 -262144
--1 -1 2900 1;
+-1 -1 0 1;
 #X text 244 115 manual play;
 #X text 111 48 stop metro;
 #X obj 169 250 loadbang;
@@ -59,9 +57,9 @@
 #X connect 15 0 14 0;
 #X connect 16 0 3 0;
 #X connect 17 0 15 0;
-#X restore 83 182 pd triggers;
-#X msg 37 162 static_increment \$1;
-#X obj 37 135 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+#X restore 58 181 pd triggers;
+#X msg 26 161 static_increment \$1;
+#X obj 26 134 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
 ;
 #N canvas 184 101 652 543 Learn-About-Me 0;
 #X text 30 61 (up to 8 simultaneous plays) so that;
@@ -87,35 +85,48 @@
 #X text 46 504 rhythm then using metro.;
 #X text 44 351 whatever increment is set at the onset of each note
 ;
-#X restore 142 424 pd Learn-About-Me;
-#X text 183 370 do this before turning on DACs;
-#X text 165 355 <- first load in a short sound (recommend 1-5 secs.)
+#X restore 130 423 pd Learn-About-Me;
+#X text 177 348 do this before turning on DACs;
+#X text 161 330 <- first load in a short sound (recommend 1-5 secs.)
 ;
-#X floatatom 75 304 5 0 0 0 - - -;
-#X obj 38 322 *~ 0.2;
-#X obj 167 289 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -260987
--1 -1 7900 1;
-#X obj 37 92 loadbang;
-#X obj 301 212 sig~;
-#X obj 187 235 clean_selector~ 2;
-#X obj 187 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X floatatom 63 303 5 0 0 0 - player-gain -, f 5;
+#X obj 26 321 *~ 0.2;
+#X obj 266 396 hsl 128 15 0 1 0 0 player-gain player-gain-in gain -2
+-8 0 10 -260987 -1 -1 0 1;
+#X obj 26 91 loadbang;
+#X obj 286 211 sig~;
+#X obj 170 234 clean_selector~ 2;
+#X obj 170 182 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 186 206 channel \$1;
-#X msg 37 113 0;
-#X connect 1 0 16 0;
-#X connect 4 0 3 0;
-#X connect 6 0 5 0;
-#X connect 7 0 19 0;
-#X connect 9 0 1 0;
-#X connect 9 1 20 0;
-#X connect 10 0 1 0;
-#X connect 11 0 10 0;
-#X connect 15 0 16 1;
-#X connect 16 0 2 0;
-#X connect 17 0 15 0;
-#X connect 18 0 23 0;
-#X connect 19 0 20 1;
-#X connect 20 0 1 1;
-#X connect 21 0 22 0;
-#X connect 22 0 20 0;
-#X connect 23 0 11 0;
+#X msg 170 205 channel \$1;
+#X obj 9 7 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X obj 26 276 player~ sf4player 1 8;
+#N canvas 0 22 450 300 initialize 0;
+#X obj 164 103 s phasemod-scope-tog;
+#X obj 153 36 loadbang;
+#X msg 154 62 0.1;
+#X connect 1 0 2 0;
+#X restore 26 387 pd initialize;
+#X text 13 53 player~ - click driven sample-accurate array playback
+;
+#X text 187 280 remove channel argument \, document overlap argumenr
+;
+#X msg 26 112 1;
+#X text 47 137 set this for fixed increments (and polyphony);
+#X connect 3 0 2 0;
+#X connect 4 0 16 0;
+#X connect 6 0 21 0;
+#X connect 6 1 17 0;
+#X connect 7 0 21 0;
+#X connect 8 0 7 0;
+#X connect 12 0 13 1;
+#X connect 13 0 1 0;
+#X connect 13 0 1 1;
+#X connect 15 0 25 0;
+#X connect 16 0 17 1;
+#X connect 17 0 21 1;
+#X connect 18 0 19 0;
+#X connect 19 0 17 0;
+#X connect 21 0 13 0;
+#X connect 25 0 8 0;

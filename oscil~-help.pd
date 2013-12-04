@@ -1,10 +1,6 @@
-#N canvas 430 232 550 302 10;
-#X floatatom 94 42 5 0 0 0 frequency - -;
-#X obj 155 116 *~ 0.05;
-#X obj 155 178 dac~;
-#X msg 45 106 \; pd dsp \$1;
-#X obj 45 83 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#N canvas 241 327 452 381 10;
+#X floatatom 127 164 5 0 0 2 frequency oscil-frequency-in -, f 5;
+#X obj -66 312 dac~;
 #N canvas 0 22 639 421 built-in-waveforms 0;
 #X obj 121 344 outlet;
 #X msg 135 88 square;
@@ -12,14 +8,14 @@
 #X msg 254 89 buzz;
 #X msg 299 89 sine;
 #X msg 26 43 harmcount \$1;
-#X floatatom 26 23 5 0 0 0 - - -;
+#X floatatom 26 23 5 0 0 0 - - -, f 5;
 #X msg 343 88 sawtooth;
 #X msg 374 221 harmcount \$1;
-#X floatatom 324 175 5 0 0 0 - - -;
+#X floatatom 324 175 5 0 0 0 - - -, f 5;
 #X obj 324 195 t b f;
 #X msg 324 219 buzz;
 #X obj 327 154 hsl 40 15 1 40 0 0 empty empty empty -2 -6 0 8 -36928
--1 -1 800 1;
+-1 -1 0 1;
 #X text 131 69 band-limited waveforms;
 #X text 325 133 or do it dynamically;
 #X msg 272 312 fadetime 50;
@@ -40,12 +36,12 @@
 #X connect 11 0 0 0;
 #X connect 12 0 9 0;
 #X connect 15 0 0 0;
-#X restore 155 9 pd built-in-waveforms;
-#X obj 155 87 oscil~ 220 8192 square 16;
-#X floatatom 354 103 5 0 0 0 - - -;
-#X msg 361 19 fadetime 5000;
-#X msg 377 37 fadetime 50;
-#X obj 357 84 hsl 128 15 0 0.7 0 0 empty empty gain -2 -6 0 8 -261836
+#X restore -66 73 pd built-in-waveforms;
+#X obj -66 221 oscil~ 220 8192 square 16;
+#X floatatom 140 228 5 0 0 0 - - -, f 5;
+#X msg -22 134 fadetime 5000;
+#X msg -6 163 fadetime 50;
+#X obj 143 209 hsl 128 15 0 0.7 0 0 empty empty gain -2 -6 0 8 -261836
 -1 -1 0 1;
 #N canvas 0 22 470 320 user-waveforms 0;
 #X msg 105 81 0 0 0.1 0 0.25 0.5 0 0 0.3 0.1 0.05;
@@ -62,23 +58,27 @@
 #X connect 3 0 1 0;
 #X connect 4 0 1 0;
 #X connect 6 0 1 0;
-#X restore 164 31 pd user-waveforms;
-#X text 83 241 oscillator with arbitrary waveforms \, length and crossfade
-;
-#X text 85 256 between different waveforms;
-#X text 357 3 waveform interpolation;
-#X obj 63 8 loadbang;
-#X msg 94 24 220;
-#X connect 0 0 6 0;
+#X restore -57 95 pd user-waveforms;
+#X text -26 118 waveform interpolation;
+#X obj -64 12 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X text -68 42 oscil~ - an oscillator with arbitrary waveforms \, length
+and crossfade between different waveforms;
+#N canvas 0 22 450 300 initialize 0;
+#X obj 78 90 loadbang;
+#X msg 78 113 220;
+#X obj 78 148 s oscil-frequency-in;
+#X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 1 0 2 1;
-#X connect 4 0 3 0;
-#X connect 5 0 6 0;
-#X connect 6 0 1 0;
-#X connect 7 0 1 1;
-#X connect 8 0 6 0;
-#X connect 9 0 6 0;
-#X connect 10 0 7 0;
-#X connect 11 0 6 0;
-#X connect 15 0 16 0;
-#X connect 16 0 0 0;
+#X restore -9 303 pd initialize;
+#X obj -66 250 *~ 0.02;
+#X connect 0 0 3 0;
+#X connect 2 0 3 0;
+#X connect 3 0 13 0;
+#X connect 4 0 13 1;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 4 0;
+#X connect 8 0 3 0;
+#X connect 13 0 1 0;
+#X connect 13 0 1 1;

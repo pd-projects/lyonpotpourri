@@ -6,11 +6,11 @@
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array cdemo_source 62079 float 2;
 #X coords 0 1 62079 -1 200 140 1;
-#X restore 36 41 graph;
+#X restore 24 89 graph;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array cdemo_dest 524288 float 2;
-#X coords 0 1 524288 -1 200 140 1;
-#X restore 37 195 graph;
+#X array cdemo_dest 131072 float 2;
+#X coords 0 1 131072 -1 200 140 1;
+#X restore 25 243 graph;
 #X obj 269 222 convolver~ cdemo_source cdemo_impulse cdemo_dest;
 #X obj 269 241 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
@@ -23,7 +23,7 @@
 #X obj 473 41 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X floatatom 512 121 5 0 0 0 - - -, f 5;
-#X msg 36 349 bang;
+#X msg 24 397 bang;
 #X obj 515 106 hsl 100 12 0 1 0 0 empty empty gain -2 -8 0 8 -261570
 -1 -1 0 1;
 #X msg 434 398 noiseimp \$1;
@@ -37,10 +37,10 @@
 #X msg 432 270 bang;
 #X msg 432 307 read -resize \$1 cdemo_impulse;
 #X msg 573 155 \; pd dsp \$1;
-#X obj 573 131 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 573 131 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 430 351 ... or build a synthetic impulse;
-#N canvas 255 741 450 300 sound-source 0;
+#N canvas 715 441 450 300 sound-source 0;
 #X obj 104 159 soundfiler;
 #X obj 104 120 loadbang;
 #X obj 104 88 soundfiler;
@@ -52,7 +52,7 @@
 #X msg 44 218 noiseimp -5;
 #X obj 44 193 loadbang;
 #X text 112 195 default impulse;
-#X msg 104 141 read -resize examples/voice.wav cdemo_source;
+#X msg 104 141 read -resize sound/voice.wav cdemo_source;
 #X connect 1 0 11 0;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
@@ -60,13 +60,11 @@
 #X connect 8 0 7 0;
 #X connect 9 0 8 0;
 #X connect 11 0 0 0;
-#X restore 36 373 pd sound-source;
-#X obj 23 -4 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+#X restore 24 421 pd sound-source;
+#X obj 23 8 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
 -204786 0;
-#X obj 23 469 cnv 15 300 20 empty empty http://www.sarc.qub.ac.uk/~elyon/
-20 12 0 14 -203904 -13381 0;
-#X text 42 446 convolver~ - non-real-time convolution;
-#X text 76 350 1 find a soundfile to convolve;
+#X text 22 41 convolver~ - non-real-time convolution;
+#X text 64 398 1 find a soundfile to convolve;
 #X text 471 271 2 find an impulse response;
 #X text 269 380 3 perform convolution;
 #X text 492 41 4 play convolution result;

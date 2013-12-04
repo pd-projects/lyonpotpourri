@@ -1,8 +1,8 @@
-#N canvas 165 83 861 558 10;
-#X obj 29 227 granulesf~ gsf_wavetable gsf_window;
+#N canvas 660 123 699 573 10;
+#X obj 25 302 granulesf~ gsf_wavetable gsf_window;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array gsf_window 32768 float 3;
-#A 0 -0 9.19179e-09 3.67671e-08 8.27261e-08 1.47069e-07 2.29795e-07
+#A 0 0 9.19179e-09 3.67671e-08 8.27261e-08 1.47069e-07 2.29795e-07
 3.30904e-07 4.50397e-07 5.88274e-07 7.44534e-07 9.19178e-07 1.11221e-06
 1.32362e-06 1.55341e-06 1.80159e-06 2.06815e-06 2.3531e-06 2.65642e-06
 2.97814e-06 3.31823e-06 3.67671e-06 4.05357e-06 4.44882e-06 4.86245e-06
@@ -4252,18 +4252,18 @@
 4.44882e-06 4.05357e-06 3.67671e-06 3.31823e-06 2.97814e-06 2.65642e-06
 2.3531e-06 2.06815e-06 1.80159e-06 1.55341e-06 1.32362e-06 1.11221e-06
 9.19178e-07 7.44534e-07 5.88274e-07 4.50397e-07 3.30904e-07 2.29795e-07
-1.47069e-07 8.27261e-08 3.67671e-08 9.19179e-09;
+1.47069e-07 8.27261e-08 3.67671e-08 9.19178e-09;
 #X coords 0 1 32767 -1 200 140 1;
-#X restore 480 9 graph;
-#X obj 51 70 function~ gsf_window;
-#X msg 51 47 rcos;
+#X restore 431 29 graph;
+#X obj 25 156 function~ gsf_window;
+#X msg 25 133 rcos;
 #N canvas 10 37 581 367 sprayclouds 0;
 #X obj 9 231 outlet;
 #X msg 9 153 spray;
 #X obj 116 108 metro 1000;
 #X obj 116 87 tgl 15 0 empty dac-toggle empty 0 -6 0 8 -262144 -1 -1
 0 1;
-#X floatatom 9 65 5 0 0 0 - - -;
+#X floatatom 9 65 5 0 0 0 - - -, f 5;
 #X msg 116 155 pitchspray;
 #X msg 9 32 1;
 #X obj 9 12 loadbang;
@@ -4315,7 +4315,7 @@
 #X connect 9 0 3 0;
 #X connect 13 0 1 0;
 #X connect 13 1 5 0;
-#X restore 29 106 pd sprayclouds;
+#X restore 25 181 pd sprayclouds;
 #N canvas 0 22 454 304 amp 0;
 #X obj 89 108 inlet~;
 #X obj 89 149 *~;
@@ -4330,18 +4330,15 @@
 #X connect 4 0 5 0;
 #X connect 6 0 4 1;
 #X connect 6 0 1 1;
-#X restore 29 351 pd amp;
-#X obj 107 336 hsl 128 15 0 1 0 0 empty empty gain -2 -6 0 8 -81528
--1 -1 7300 1;
-#X obj 29 381 dac~;
-#X msg 323 264 \; pd dsp \$1;
-#X obj 323 230 tgl 15 0 dac-toggle empty empty 0 -6 0 8 -262144 -1
--1 0 1;
+#X restore 25 389 pd amp;
+#X obj 223 344 hsl 128 15 0 1 0 0 empty empty gain -2 -6 0 8 -81528
+-1 -1 0 1;
+#X obj 25 419 dac~;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array gsf_wavetable 4e+06 float 2;
 #X coords 0 1 4e+06 -1 200 140 1;
-#X restore 480 149 graph;
-#X text 44 404 your sound here - it should be at least 20 seconds long
+#X restore 431 169 graph;
+#X text 99 431 your sound here - it should be at least 20 seconds long
 ->;
 #N canvas 181 44 551 550 grist 0;
 #X obj 87 481 outlet;
@@ -4350,7 +4347,7 @@
 #X text 15 41 args: events horizon min_incr max_incr minpan maxpan
 minamp maxamp mindur maxdur;
 #X msg 211 439 events \$1;
-#X floatatom 211 416 5 0 0 0 - - -;
+#X floatatom 211 416 5 0 0 0 - - -, f 5;
 #X text 255 417 directly set events per "cloud";
 #X msg 108 152 grist 5 1000 1 1 0.1 0.9 0.1 0.9 1000 2000;
 #X msg 120 193 grist 8 1000 0.25 3 0.1 0.9 1 1 200 200;
@@ -4368,8 +4365,8 @@ minamp maxamp mindur maxdur;
 #X connect 10 0 0 0;
 #X connect 11 0 1 0;
 #X connect 12 0 0 0;
-#X restore 44 125 pd grist;
-#X obj 51 21 loadbang;
+#X restore 40 200 pd grist;
+#X obj 25 107 loadbang;
 #N canvas 0 22 498 348 scales 0;
 #X obj 110 246 outlet;
 #X text 66 43 these get used when you drive with "pitchspray";
@@ -4385,7 +4382,7 @@ minamp maxamp mindur maxdur;
 #X connect 5 0 0 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
-#X restore 55 144 pd scales;
+#X restore 51 219 pd scales;
 #N canvas 287 22 749 764 more-messages 0;
 #X obj 40 615 outlet;
 #X msg 40 49 nopan \$1;
@@ -4404,15 +4401,15 @@ minamp maxamp mindur maxdur;
 1;
 #X msg 102 168 interpolate_envelope \$1;
 #X text 121 145 set envelope interpolation (off by default);
-#X floatatom 147 280 5 0 0 0 - - -;
+#X floatatom 147 280 5 0 0 0 - - -, f 5;
 #X msg 147 302 retro_odds \$1;
 #X text 186 280 odds for backwards grain (0-1);
-#X floatatom 222 324 5 0 0 0 - - -;
+#X floatatom 222 324 5 0 0 0 - - -, f 5;
 #X msg 222 346 transpose \$1;
 #X text 255 382 reseed random generator;
 #X msg 216 402 seed \$1;
-#X floatatom 216 384 5 0 0 0 - - -;
-#X floatatom 229 428 5 0 0 0 - - -;
+#X floatatom 216 384 5 0 0 0 - - -, f 5;
+#X floatatom 229 428 5 0 0 0 - - -, f 5;
 #X msg 229 446 pitchdev \$1;
 #X text 268 426 detune factor for "pitchspray";
 #X msg 220 491 grain 3300 -1 1 0.2 15000;
@@ -4441,14 +4438,14 @@ minamp maxamp mindur maxdur;
 #X connect 24 0 0 0;
 #X connect 27 0 0 0;
 #X connect 28 0 16 0;
-#X restore 73 186 pd more-messages;
-#X text 140 106 <- triggering;
-#X text 107 125 <- parameters;
-#X text 129 146 <- optional tunings;
-#X text 193 187 <- etc.;
-#X text 49 474 granulesf~ creates granular textures by mixing together
+#X restore 69 261 pd more-messages;
+#X text 136 181 <- triggering;
+#X text 103 200 <- parameters;
+#X text 125 221 <- optional tunings;
+#X text 189 262 <- etc.;
+#X text 25 52 granulesf~ creates granular textures by mixing together
 enveloped grains taken from a soundfile stored in an array.;
-#X msg 86 47 adrenv 0.05 0.1 0.3 1;
+#X msg 60 133 adrenv 0.05 0.1 0.3 1;
 #N canvas 0 22 828 525 skiptimes 0;
 #X msg 282 152 maxskip -1;
 #X msg 209 151 minskip 0;
@@ -4467,9 +4464,9 @@ starts (or ends) at the same time;
 #X obj 266 224 hsl 128 15 0 20000 0 0 empty empty skiptime -2 -6 0
 8 -81528 -1 -1 0 1;
 #X obj 263 268 t f f;
-#X floatatom 263 247 5 0 0 0 - - -;
+#X floatatom 263 247 5 0 0 0 - - -, f 5;
 #X text 403 225 slide it!;
-#X floatatom 357 256 5 0 0 0 - - -;
+#X floatatom 357 256 5 0 0 0 - - -, f 5;
 #X obj 357 300 + 0;
 #X text 398 255 optional offset;
 #X msg 19 54 minskip 5000;
@@ -4495,12 +4492,15 @@ starts (or ends) at the same time;
 #X connect 19 0 2 0;
 #X connect 20 0 16 0;
 #X connect 20 1 16 1;
-#X restore 64 164 pd skiptimes;
-#X text 154 163 <- constrain grain selection;
-#X obj 466 432 soundfiler;
-#X obj 466 381 openpanel;
-#X msg 466 357 bang;
-#X msg 466 404 read -resize \$1 gsf_wavetable;
+#X restore 60 239 pd skiptimes;
+#X text 150 238 <- constrain grain selection;
+#X obj 466 452 soundfiler;
+#X obj 466 401 openpanel;
+#X msg 466 377 bang;
+#X msg 466 424 read -resize \$1 gsf_wavetable;
+#X obj 23 10 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X text 100 113 grain envelope;
 #X connect 0 0 5 0;
 #X connect 0 1 5 1;
 #X connect 3 0 2 0;
@@ -4508,13 +4508,12 @@ starts (or ends) at the same time;
 #X connect 5 0 7 0;
 #X connect 5 1 7 1;
 #X connect 6 0 5 2;
-#X connect 9 0 8 0;
+#X connect 10 0 0 0;
+#X connect 11 0 3 0;
 #X connect 12 0 0 0;
-#X connect 13 0 3 0;
-#X connect 14 0 0 0;
-#X connect 15 0 0 0;
-#X connect 21 0 2 0;
-#X connect 22 0 0 0;
-#X connect 25 0 27 0;
-#X connect 26 0 25 0;
-#X connect 27 0 24 0;
+#X connect 13 0 0 0;
+#X connect 19 0 2 0;
+#X connect 20 0 0 0;
+#X connect 23 0 25 0;
+#X connect 24 0 23 0;
+#X connect 25 0 22 0;

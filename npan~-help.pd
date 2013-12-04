@@ -1,14 +1,8 @@
 #N canvas 687 213 522 443 10;
-#X obj 115 133 npan~ 4;
-#X obj 154 100 phasor~ 0.2;
-#X obj 115 74 noise~;
-#X msg 295 146 \; pd dsp \$1;
-#X obj 295 115 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
-#X text 113 22 Argument determines number of outlets. Left inlet is
-sound to pan. Right inlet (ranging from 0-1) determines perimeter pan
-location.;
-#X obj 116 274 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X obj -38 157 npan~ 4;
+#X obj 1 124 phasor~ 0.2;
+#X obj -38 98 noise~;
+#X obj -37 298 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #N canvas 0 22 450 300 meter 0;
 #X obj 110 164 snapshot~;
 #X obj 126 114 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
@@ -30,8 +24,8 @@ location.;
 #X connect 6 0 7 0;
 #X connect 7 0 1 0;
 #X connect 9 0 3 0;
-#X restore 115 231 pd meter;
-#X obj 177 275 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X restore -38 255 pd meter;
+#X obj 24 299 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #N canvas 0 22 450 300 meter 0;
 #X obj 110 164 snapshot~;
 #X obj 126 114 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
@@ -53,8 +47,8 @@ location.;
 #X connect 6 0 7 0;
 #X connect 7 0 1 0;
 #X connect 9 0 3 0;
-#X restore 176 232 pd meter;
-#X obj 240 275 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X restore 23 256 pd meter;
+#X obj 87 299 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #N canvas 0 22 450 300 meter 0;
 #X obj 110 164 snapshot~;
 #X obj 126 114 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
@@ -76,8 +70,8 @@ location.;
 #X connect 6 0 7 0;
 #X connect 7 0 1 0;
 #X connect 9 0 3 0;
-#X restore 239 232 pd meter;
-#X obj 301 276 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X restore 86 256 pd meter;
+#X obj 148 300 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #N canvas 0 22 450 300 meter 0;
 #X obj 110 164 snapshot~;
 #X obj 126 114 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
@@ -99,15 +93,21 @@ location.;
 #X connect 6 0 7 0;
 #X connect 7 0 1 0;
 #X connect 9 0 3 0;
-#X restore 300 233 pd meter;
-#X connect 0 0 7 0;
-#X connect 0 1 9 0;
-#X connect 0 2 11 0;
-#X connect 0 3 13 0;
+#X restore 147 257 pd meter;
+#X obj -44 13 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X text 20 158 arg: number of outlets;
+#X text 80 97 Left inlet is sound to pan. Right inlet (ranging from
+0-1) determines perimeter pan location.;
+#X text -35 57 npan~ - perimeter panning for an arbitrary number of
+channel outputs, f 69;
+#X connect 0 0 4 0;
+#X connect 0 1 6 0;
+#X connect 0 2 8 0;
+#X connect 0 3 10 0;
 #X connect 1 0 0 1;
 #X connect 2 0 0 0;
 #X connect 4 0 3 0;
-#X connect 7 0 6 0;
-#X connect 9 0 8 0;
-#X connect 11 0 10 0;
-#X connect 13 0 12 0;
+#X connect 6 0 5 0;
+#X connect 8 0 7 0;
+#X connect 10 0 9 0;

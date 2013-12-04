@@ -1,25 +1,21 @@
-#N canvas 110 266 576 428 10;
+#N canvas 543 159 539 382 10;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array sound1 62079 float 2;
-#X coords 0 1 62079 -1 200 140 1;
-#X restore 227 69 graph;
-#X obj 124 257 chopper~ sound1;
-#X msg 376 316 \; pd dsp \$1;
-#X obj 376 282 tgl 30 0 empty empty empty 0 -6 0 8 -257985 -1 -1 0
-1;
-#X obj 124 334 dac~;
-#N canvas 545 158 502 352 messages 0;
-#X obj 53 228 outlet;
-#N canvas 270 307 560 676 basic 0;
+#X coords 0 1 62079 -1 100 70 1;
+#X restore 21 88 graph;
+#X obj 103 218 chopper~ sound1;
+#X obj 103 295 dac~;
+#N canvas 745 473 502 352 messages 0;
+#N canvas 128 60 560 676 basic 0;
 #X obj 49 335 outlet;
 #X msg 49 106 force_new;
 #X msg 128 107 lockme \$1;
 #X obj 128 69 tgl 30 0 empty empty empty 0 -6 0 8 -257985 -1 -1 0 1
 ;
-#X floatatom 200 132 5 0 0 0 - minincr -;
-#X floatatom 322 130 5 0 0 0 - maxincr -;
-#X floatatom 329 228 5 0 0 0 - minseg -;
-#X floatatom 432 228 5 0 0 0 - maxseg -;
+#X floatatom 200 132 5 0 0 0 - minincr -, f 5;
+#X floatatom 322 130 5 0 0 0 - maxincr -, f 5;
+#X floatatom 329 228 5 0 0 0 - minseg -, f 5;
+#X floatatom 432 228 5 0 0 0 - maxseg -, f 5;
 #X msg 329 249 set_minseg \$1;
 #X msg 432 249 set_maxseg \$1;
 #X msg 322 151 set_maxincr \$1;
@@ -36,31 +32,31 @@
 #X obj 27 4 loadbang;
 #X obj 245 147 s minseg-init;
 #X obj 352 146 s maxseg-init;
-#X msg 352 119 200;
 #X msg 245 120 100;
 #X obj 323 91 s fixed-incr-init;
 #X msg 323 64 1;
+#X msg 352 119 2000;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;
 #X connect 4 0 3 0;
 #X connect 4 0 1 0;
-#X connect 4 0 8 0;
 #X connect 4 0 7 0;
 #X connect 4 0 10 0;
-#X connect 7 0 6 0;
-#X connect 8 0 5 0;
-#X connect 10 0 9 0;
+#X connect 4 0 9 0;
+#X connect 7 0 5 0;
+#X connect 9 0 8 0;
+#X connect 10 0 6 0;
 #X restore 275 51 pd init;
 #X obj 55 445 hsl 128 15 3 300 0 0 minseg minseg-init minseg -2 -6
 0 8 -252672 -1 -1 4148 1;
 #X obj 55 476 hsl 128 15 20 2000 0 0 maxseg maxseg-init maxseg -2 -6
-0 8 -252672 -1 -1 1155 1;
+0 8 -252672 -1 -1 12700 1;
 #X msg 311 383 fixed_increment \$1;
 #X obj 49 8 tgl 30 0 empty empty empty 0 -6 0 8 -257985 -1 -1 0 1;
 #X obj 49 52 metro 120000;
 #X obj 314 350 hsl 50 10 0.1 5 0 0 empty empty empty -2 -8 0 10 -174016
 -1 -1 0 1;
-#X floatatom 311 366 5 0 0 0 - - -;
+#X floatatom 311 366 5 0 0 0 - - -, f 5;
 #X obj 382 349 r fixed-incr-init;
 #X obj 278 309 t b;
 #X msg 278 330 0;
@@ -89,14 +85,14 @@
 #N canvas 480 42 593 551 deviations 0;
 #X obj 224 188 outlet;
 #X msg 224 134 rdur \$1;
-#X floatatom 224 110 5 0 0 0 - rdur -;
+#X floatatom 224 110 5 0 0 0 - rdur -, f 5;
 #X obj 222 250 hsl 128 15 0 1 0 0 rdur rdur-init rdur -2 -6 0 8 -252672
 -1 -1 0 1;
 #X obj 222 282 hsl 128 15 0 1 0 0 rinc rinc-init rinc -2 -6 0 8 -252672
 -1 -1 0 1;
-#X floatatom 288 110 5 0 0 0 - rinc -;
+#X floatatom 288 110 5 0 0 0 - rinc -, f 5;
 #X msg 288 134 rinc \$1;
-#X floatatom 356 110 5 0 0 0 - jitter -;
+#X floatatom 356 110 5 0 0 0 - jitter -, f 5;
 #X msg 356 134 jitter \$1;
 #X obj 222 316 hsl 128 15 0 1 0 0 jitter jitter-init jitter -2 -6 0
 8 -252672 -1 -1 0 1;
@@ -117,7 +113,7 @@
 #X msg 74 87 show_loop;
 #X text 208 170 use numbers that come from show_loop;
 #X msg 35 144 force_new;
-#X msg 281 188 set_loop 3000 5000 1.62;
+#X msg 281 188 set_loop 1000 25000 1.62;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
 #X connect 4 0 0 0;
@@ -132,7 +128,7 @@
 ;
 #X msg 38 74 adjust_inverse \$1;
 #X msg 95 123 taper \$1;
-#X floatatom 95 100 5 0 0 0 - taper-dur -;
+#X floatatom 95 100 5 0 0 0 - taper-dur -, f 5;
 #X obj 41 185 hsl 128 15 1 100 0 0 taper-dur taper-dur-init taper-dur
 -2 -6 0 8 -252672 -1 -1 0 1;
 #X text 78 29 maintains loop duration;
@@ -153,34 +149,54 @@
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
 #X restore 140 131 pd system;
-#X connect 1 0 0 0;
-#X connect 2 0 0 0;
-#X connect 3 0 0 0;
-#X connect 4 0 0 0;
-#X connect 5 0 0 0;
-#X restore 124 232 pd messages;
-#X text 27 31 use a fairly long and varied sound here;
+#X obj 54 201 s chopper.demo.msgs;
+#X connect 0 0 5 0;
+#X connect 1 0 5 0;
+#X connect 2 0 5 0;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X restore 236 85 pd messages;
 #N canvas 9 465 466 316 load-soundfile 0;
 #X obj 31 177 soundfiler;
 #X msg 30 103 bang;
 #X obj 30 129 openpanel;
 #X msg 30 151 read -resize \$1 sound1;
 #X obj 11 57 loadbang;
-#X msg 10 82 read -resize examples/voice.wav sound1;
+#X obj 105 40 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X msg 10 82 read -resize sound/voice.wav sound1;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;
-#X connect 4 0 5 0;
-#X connect 5 0 0 0;
-#X restore 339 230 pd load-soundfile;
-#X obj 124 304 *~ 0.1;
-#X obj 164 285 hsl 50 10 0 0.5 0 0 empty empty empty -2 -8 0 10 -174016
+#X connect 4 0 6 0;
+#X connect 5 0 6 0;
+#X connect 6 0 0 0;
+#X restore 285 330 pd load-soundfile;
+#X obj 103 265 *~ 0.1;
+#X obj 240 116 hsl 100 14 0 0.5 0 0 empty empty empty -2 -8 0 10 -174016
 -1 -1 0 1;
-#X text 124 368 algorithmic array chopper;
-#X text 121 215 open this for more info;
-#X connect 1 0 8 0;
-#X connect 3 0 2 0;
-#X connect 5 0 1 0;
-#X connect 8 0 4 0;
-#X connect 8 0 4 1;
-#X connect 9 0 8 1;
+#X obj 18 8 cnv 15 160 25 empty empty LyonPotpourri 20 12 1 18 -260097
+-204786 0;
+#X text 17 38 chopper~ - an algorithmic array chopper;
+#X obj 103 195 r chopper.demo.msgs;
+#X obj 291 215 chopper~ sound1;
+#X obj 291 192 r chopper.demo.msgs;
+#X obj 291 265 *~ 0.1;
+#X obj 330 243 r chopper.demo.gain;
+#X obj 142 242 r chopper.demo.gain;
+#X obj 237 141 s chopper.demo.gain;
+#X text 323 86 <- open this for more info;
+#X text 346 118 set master gain;
+#X msg 24 171 sync_out;
+#X text 88 170 sync instances;
+#X text 25 330 use a fairly long and varied sound here ->;
+#X connect 1 0 5 0;
+#X connect 5 0 2 0;
+#X connect 6 0 15 0;
+#X connect 9 0 1 0;
+#X connect 10 0 12 0;
+#X connect 11 0 10 0;
+#X connect 12 0 2 1;
+#X connect 13 0 12 1;
+#X connect 14 0 5 1;
+#X connect 18 0 1 0;
